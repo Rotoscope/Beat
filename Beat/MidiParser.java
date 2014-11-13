@@ -2,8 +2,6 @@ import java.io.File;
 import javax.sound.midi.*;
 
 public class MidiParser {
-  public static final int NOTE_ON = 0x90;
-  public static final int NOTE_OFF = 0x80;
   public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
   
   String filepath;
@@ -57,23 +55,23 @@ public class MidiParser {
         if (message instanceof ShortMessage) {
           ShortMessage sm = (ShortMessage) message;
           channel = sm.getChannel();
+          int velocity = sm.getData2();
           
-          if (sm.getCommand() == NOTE_ON) {
+          if (sm.getCommand() == ShortMessage.NOTE_ON && velocity != 0) {
             int noteKey = sm.getData1();
             int octave = (noteKey / 12)-1;
             int note = noteKey % 12;
             String noteName = NOTE_NAMES[note];
-            int velocity = sm.getData2();
             
             trackTimings[trackNumber].addNote(tick, "ON", noteName, octave, noteKey, velocity, channel); 
-          } else if (sm.getCommand() == NOTE_OFF) {
+          } else if (sm.getCommand() == ShortMessage.NOTE_OFF || 
+                      (sm.getCommand() == ShortMessage.NOTE_ON && velocity == 0)) {
             int noteKey = sm.getData1();
             int octave = (noteKey / 12)-1;
             int note = noteKey % 12;
             String noteName = NOTE_NAMES[note];
-            int velocity = sm.getData2();
             
-            trackTimings[trackNumber].addNote(tick, "ON", noteName, octave, noteKey, velocity, channel); 
+            trackTimings[trackNumber].addNote(tick, "OFF", noteName, octave, noteKey, velocity, channel); 
           } else {
             System.out.println("Command:" + sm.getCommand());
           }
