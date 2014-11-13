@@ -39,13 +39,25 @@ public class MidiParser {
     return sequencer;
   }
   
+  public Track[] getTracks() {
+    return tracks;
+  }
+  
+  public Track getTrack(int i) {
+    return tracks[i];
+  }
+  
+  public TrackTiming getTrackTiming(int i) {
+    return trackTimings[i];
+  }
+  
   public void parseMidiFile() {
     int trackNumber = 0, channel;
     long tick;
     
     for (Track track :  tracks) {
       trackTimings[trackNumber].setTrackNumber(trackNumber + 1);
-      trackTimings[trackNumber].setTrackSize(track.size());
+      trackTimings[trackNumber].setNumberOfEvents(track.size());
       
       for (int i=0; i < track.size(); i++) { 
         MidiEvent event = track.get(i);
