@@ -42,33 +42,38 @@ public class MidiParser {
   }
   
   public void parseMidiFile() {
-    int trackNumber = 0;
+    int trackNumber = 0, channel;
+    long tick;
+    
     for (Track track :  tracks) {
-      trackTimings[trackNumber].setTrackNumber(trackNumber);
+      trackTimings[trackNumber].setTrackNumber(trackNumber + 1);
       trackTimings[trackNumber].setTrackSize(track.size());
-      trackNumber++;
-
+      
       for (int i=0; i < track.size(); i++) { 
         MidiEvent event = track.get(i);
-        System.out.print("@" + event.getTick() + " ");
+        tick = event.getTick();
         MidiMessage message = event.getMessage();
+        
         if (message instanceof ShortMessage) {
           ShortMessage sm = (ShortMessage) message;
-          System.out.print("Channel: " + sm.getChannel() + " ");
+          channel = sm.getChannel();
+          
           if (sm.getCommand() == NOTE_ON) {
-            int key = sm.getData1();
-            int octave = (key / 12)-1;
-            int note = key % 12;
+            int noteKey = sm.getData1();
+            int octave = (noteKey / 12)-1;
+            int note = noteKey % 12;
             String noteName = NOTE_NAMES[note];
             int velocity = sm.getData2();
-            System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+            
+            trackTimings[trackNumber].addNote(tick, "ON", noteName, octave, noteKey, velocity, channel); 
           } else if (sm.getCommand() == NOTE_OFF) {
-            int key = sm.getData1();
-            int octave = (key / 12)-1;
-            int note = key % 12;
+            int noteKey = sm.getData1();
+            int octave = (noteKey / 12)-1;
+            int note = noteKey % 12;
             String noteName = NOTE_NAMES[note];
             int velocity = sm.getData2();
-            System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+            
+            trackTimings[trackNumber].addNote(tick, "ON", noteName, octave, noteKey, velocity, channel); 
           } else {
             System.out.println("Command:" + sm.getCommand());
           }
@@ -76,7 +81,7 @@ public class MidiParser {
           System.out.println("Other message: " + message.getClass());
         }
       }
-      System.out.println();
+      trackNumber++;
     }
   }
 }
