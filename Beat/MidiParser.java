@@ -7,12 +7,17 @@ public class MidiParser {
   String filepath;
   Sequencer sequencer;
   Sequence sequence;
+  MetaData metaData;
+  MidiFileFormat mff;
   Track[] tracks;
   TrackTiming[] trackTimings;
   
   MidiParser(File f) {
     try {
+      filepath = f.getAbsolutePath();
       sequence = MidiSystem.getSequence(f);
+      mff = MidiSystem.getMidiFileFormat(f);
+      metaData = new MetaData(mff);
     
       sequencer = MidiSystem.getSequencer();
       sequencer.setSequence(sequence);
@@ -51,6 +56,7 @@ public class MidiParser {
     return trackTimings[i];
   }
   
+  //altered code from 
   public void parseMidiFile() {
     int trackNumber = 0, channel;
     long tick;
@@ -93,5 +99,9 @@ public class MidiParser {
       }
       trackNumber++;
     }
+  }
+  
+  public void saveNoteTimings(int trackNumber, String filePath) {  //trackNumber is determined by which beatmap was selected in authoring mode
+    trackTimings[trackNumber - 1].saveToFile(filePath);
   }
 }
