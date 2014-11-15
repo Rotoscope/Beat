@@ -10,8 +10,8 @@ public class BeatMap {
   List<BeatMapEvent> events;
   long duration;
   
-  private final pixelsPerTick = 1;
-  private final imageWidth = 40;
+  private final int pixelsPerTick = 1;
+  private final int imageWidth = 40;
   
   public BeatMap() {
     events = new ArrayList<BeatMapEvent>();

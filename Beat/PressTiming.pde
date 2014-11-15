@@ -13,4 +13,9 @@ public class PressTiming extends BeatMapEvent {
     this.duration = duration;
     this.location = location;
   }
+  
+  @Override
+  void draw(int pixelsPerTick, int imageWidth) {
+    
+  }
 }
