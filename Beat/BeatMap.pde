@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeatMap {
-  List<BeatMapEvent> events;
-  long duration;
+  private List<BeatMapEvent> events;
+  private long duration;
   
-  private final int pixelsPerTick = 1;
-  private final int imageWidth = 40;
+  int pixelsPerTick = 1;
+  int imageWidth = 40;
   
   public BeatMap() {
     events = new ArrayList<BeatMapEvent>();
@@ -36,5 +36,21 @@ public class BeatMap {
     
     
     return pg;
+  }
+  
+  public List<BeatMapEvent> getMap() {
+    return events;
+  }
+  
+  public void setMap(List<BeatMapEvent> events) {
+    this.events = events;
+  }
+  
+  public long getDuration() {
+    return duration;
+  }
+  
+  public void setDuration(long dur) {
+    this.duration = dur;
   }
 }

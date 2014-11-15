@@ -6,5 +6,5 @@
 public abstract class BeatMapEvent {
   long tick;
   long duration;
-  abstract void draw(int, int);
+  abstract void draw(PGraphics);
 }
