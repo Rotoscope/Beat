@@ -10,7 +10,7 @@ public class PressTiming extends BeatMapEvent {
   private long offset = 0;
   private BeatMap beatmap;
   
-  public PressTiming(long tick, long duration, short location, BeatMap beatmap) {
+  public PressTiming(short location, long tick, long duration, BeatMap beatmap) {
     this.tick = tick;
     this.duration = duration;
     this.location = location;
@@ -19,16 +19,14 @@ public class PressTiming extends BeatMapEvent {
   
   @Override
   void draw(PGraphics pg) {
-    int boxw = pg.width/4;
-    int boxh = duration*beatmap.pixelsPerTick;
+    int boxw = pg.width/beatmap.maxLocations;
+    int boxh = int(duration*beatmap.pixelsPerTick);
     
     int boxx = (boxw)*(location - 1);
-    int boxy = pg.height - (tick*beatmap.pixelsPerTick + boxh);
-    
-    int fillColor = #EA1111;
+    int boxy = pg.height - (int(tick*beatmap.pixelsPerTick + boxh));
     
     if(pg != null) {
-      pg.fill(fillColor);
+      pg.fill(beatmap.colors[location-1]);
       pg.noStroke();
       pg.rect(boxx,boxy,boxw,boxh);
     } else {

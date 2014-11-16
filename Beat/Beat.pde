@@ -3,37 +3,87 @@ import controlP5.*;
 
 ControlP5 cp5;
 
+PImage img = null;
+
+MidiParser mp;
+BeatMap bm;
+
 void setup() {
-  size(800,600);
-  
+  size(800, 600);
+
   cp5 = new ControlP5(this);
-  
+
   Group gMainMenu = cp5.addGroup("main menu");
+
+  cp5.addBang("songBrowse")
+    .setGroup(gMainMenu)
+      .setPosition(width/2-40, 20)
+        .setSize(80, 20)
+          .setLabel("Browse For Songs")
+            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+              ;
+
+  //  BeatMap bm = new BeatMap();
+  //  
+  //  PressTiming tm = new PressTiming((short)1,10L,250L,bm);
+  //  bm.getMap().add(tm);
+  //  bm.getMap().add(new PressTiming((short)2,20L,100L,bm));
+  //  bm.getMap().add(new PressTiming((short)3,320L,1240L,bm));
+  //  bm.getMap().add(new PressTiming((short)3,320L,1240L,bm));
+  //  bm.getMap().add(new PressTiming((short)4,200L,500L,bm));
+  //  
+  //  bm.setDuration(1240L + 320L);
+  //  
+  //  image = bm.makeImage();
 }
 
 void draw() {
-
+  if(img!=null)
+    image(img,0,0);
 }
 
+public void songBrowse() {
+  selectInput("Select a midi file", "songSelected");
+}
+
+void songSelected(File songFile) {
+  if (songFile != null) {
+    println("You selected" + songFile.getAbsolutePath());
+
+    try {   
+      bm = new BeatMap();
+      bm.loadBeatMap(songFile);
+      img = bm.makeImage();
+//      mp = new MidiParser(songFile);
+//      mp.parseMidiFile();
+//      mp.saveNoteTimings(1, "miditest.bm");
+    } 
+    catch(Exception e) {
+      System.out.println(e);
+    }
+  } else {
+    println("User hit cancel or esc");
+  }
+}
 
 /* Stanley's Debug Code */
 
 /*
 import java.io.*;
-
-MidiParser mp;
-
-void setup() {
-  size(800,600);
-
+ 
+ MidiParser mp;
+ 
+ void setup() {
+ size(800,600);
+ 
  try {   
-  mp = new MidiParser(new File("teddybear.mid"));
-  mp.parseMidiFile();
-  mp.saveNoteTimings(2, "miditest.txt");
-  
+ mp = new MidiParser(new File("teddybear.mid"));
+ mp.parseMidiFile();
+ mp.saveNoteTimings(2, "miditest.txt");
+ 
  } catch(Exception e) {
-   System.out.println(e);
+ System.out.println(e);
  }
-
-}
-*/
+ 
+ }
+ */
