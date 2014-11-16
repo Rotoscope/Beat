@@ -11,9 +11,12 @@ public class MidiParser {
   MidiFileFormat mff;
   Track[] tracks;
   TrackTiming[] trackTimings;
-  
-  MidiParser(File f) {
-    try {
+
+  /*
+    InvalidMidiDataException: Error constructing sequence or not a valid MIDI file data recognized by system
+    or IOException if midi file can't be read
+  */  
+  MidiParser(File f) throws Exception {
       filepath = f.getAbsolutePath();
       sequence = MidiSystem.getSequence(f);
       mff = MidiSystem.getMidiFileFormat(f);
@@ -26,14 +29,9 @@ public class MidiParser {
       if(tracks.length > 0) {
         trackTimings = new TrackTiming[tracks.length];
         for(int i = 0; i < trackTimings.length; i++) {
-           trackTimings[i] = new TrackTiming(); 
+          trackTimings[i] = new TrackTiming(); 
         }
       }
-    } catch(Exception e) {
-      //InvalidMidiDataException: Error constructing sequence or not a valid MIDI file data recognized by system
-      //or IOException
-      System.out.println(e);  
-    }
   }
   
   public Sequence getSequence() {
@@ -56,12 +54,16 @@ public class MidiParser {
     return trackTimings[i];
   }
   
-  //altered code from 
+  public int numOfTracks() {
+    return tracks.length;
+  }
+  
+  //altered code from http://stackoverflow.com/questions/3850688/reading-midi-files-in-java
   public void parseMidiFile() {
     int trackNumber = 0, channel;
     long tick;
     
-    for (Track track :  tracks) {
+    for (Track track : sequence.getTracks()) {
       trackTimings[trackNumber].setTrackNumber(trackNumber + 1);
       trackTimings[trackNumber].setNumberOfEvents(track.size());
       
@@ -75,6 +77,7 @@ public class MidiParser {
           channel = sm.getChannel();
           int velocity = sm.getData2();
           
+          //only add note messages
           if (sm.getCommand() == ShortMessage.NOTE_ON && velocity != 0) {
             int noteKey = sm.getData1();
             int octave = (noteKey / 12)-1;
@@ -91,17 +94,19 @@ public class MidiParser {
             
             trackTimings[trackNumber].addNote(tick, "OFF", noteName, octave, noteKey, velocity, channel); 
           } else {
-            System.out.println("Command:" + sm.getCommand());
+//            System.out.println("Command:" + sm.getCommand());    //looks at what command is given
           }
         } else {
-          System.out.println("Other message: " + message.getClass());
+//          System.out.println("Other message: " + message.getClass());    //looks at other messages like metamessages in the tracks
         }
       }
       trackNumber++;
     }
   }
   
-  public void saveNoteTimings(int trackNumber, String filePath) {  //trackNumber is determined by which beatmap was selected in authoring mode
+  //trackNumber is determined by which beatmap was selected in authoring mode
+  //trackNumber > 0 && <= # of tracks in the midi file
+  public void saveNoteTimings(int trackNumber, String filePath) throws Exception {  
     trackTimings[trackNumber - 1].saveToFile(filePath);
   }
 }
