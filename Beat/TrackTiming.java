@@ -34,23 +34,37 @@ public class TrackTiming {
     noteList.add(n);
   }
   
+  // i > 0 && i <= noteList.size()
   public Note getNote(int i) {
     return noteList.get(i);
   }
   
-  public void saveToFile(String filename) {
+  public void saveToFile(String filename) throws Exception {
     PrintWriter pw;
+    List<Note> durationStack = new ArrayList<Note>();
+    List<Note> noteONStack = new ArrayList<Note>();
     Note n;
-    try {
-      pw = new PrintWriter(filename);
-      /*PrintWriter outFile = new PrintWriter(new FileWriter("fname", true));  */ //for appendmode
-      for(int i = 0; i < noteList.size(); i++) {
-        n = noteList.get(i);
-        pw.printf("%d %ld %s %s", randInt(1,4), n.getTick(), n.getNoteName(), n.getCommand());
-      } 
-    } catch(Exception e) {
-      System.out.println(e);
+
+    pw = new PrintWriter(filename);
+
+    for(int i = 0; i < noteList.size(); i++) {
+      n = noteList.get(i);
+//      pw.printf("%d %d %s\n", randInt(1,4), n.getTick(), n.getCommand());    //debugging line
+      
+      if(n.getCommand().equals("ON")) {
+        noteONStack.add(1, n);  //add the note at the first element of the list
+      } else if(n.getCommand().equals("OFF")) {
+        for(int j = 0; j < noteONStack.size(); j++) {
+          if(n.keyEquals(noteONStack.get(j + 1))) {
+            
+            //need code
+            
+          }
+        }
+      }     
+      
     }
+    pw.close();
   }
   
   static int randInt(int min, int max) {
