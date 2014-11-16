@@ -1,6 +1,8 @@
 public class Note {
+  final int DEFAULT_DURATION = 96;
+  
   long tick;
-  int channel, velocity, noteKey, octave;
+  int channel, velocity, noteKey, octave, duration;
   String noteName, command;
   
   Note(long tic, String com, String nN, int oct, int nK, int vel, int ch) {
@@ -11,6 +13,7 @@ public class Note {
     noteKey = nK;
     velocity = vel;
     channel = ch;
+    duration = DEFAULT_DURATION;
   }
   
   public long getTick() {
@@ -40,4 +43,18 @@ public class Note {
   public int getChannel() {
     return channel;
   } 
+
+  public boolean keyEquals(Note n) {
+    return (this.channel == n.getChannel() &&
+            this.noteKey == n.getNoteKey() &&
+            this.octave == n.getOctave());
+  }
+  
+  public int getDuration() {
+    return duration;
+  }
+  
+  public void setDuration(int i) {
+    duration = i;
+  }
 }
