@@ -14,3 +14,26 @@ void setup() {
 void draw() {
 
 }
+
+
+/* Stanley's Debug Code */
+
+/*
+import java.io.*;
+
+MidiParser mp;
+
+void setup() {
+  size(800,600);
+
+ try {   
+  mp = new MidiParser(new File("teddybear.mid"));
+  mp.parseMidiFile();
+  mp.saveNoteTimings(2, "miditest.txt");
+  
+ } catch(Exception e) {
+   System.out.println(e);
+ }
+
+}
+*/
