@@ -41,29 +41,53 @@ public class TrackTiming {
   
   public void saveToFile(String filename) throws Exception {
     PrintWriter pw;
-    List<Note> durationStack = new ArrayList<Note>();
-    List<Note> noteONStack = new ArrayList<Note>();
-    Note n;
+    List<Note> durationList = new ArrayList<Note>();
+    List<Note> noteONList = new ArrayList<Note>();
+    Note n, m;
 
     pw = new PrintWriter(filename);
 
     for(int i = 0; i < noteList.size(); i++) {
       n = noteList.get(i);
-//      pw.printf("%d %d %s\n", randInt(1,4), n.getTick(), n.getCommand());    //debugging line
       
       if(n.getCommand().equals("ON")) {
-        noteONStack.add(1, n);  //add the note at the first element of the list
+        noteONList.add(n);  //add the ON note at the first element of the list
       } else if(n.getCommand().equals("OFF")) {
-        for(int j = 0; j < noteONStack.size(); j++) {
-          if(n.keyEquals(noteONStack.get(j + 1))) {
-            
-            //need code
-            
+        
+        //tosses away any OFF commands when there are no ON commands
+        for(int j = 0; j < noteONList.size(); j++) {
+          m = noteONList.get(j);
+          
+          //after finding the matching ON Note, it sets the duration and adds it to a different list
+          //any off notes is disregarded if there is no matching ON Note
+          if(n.keyEquals(m)) {
+            m.setDuration(n.getTick() - m.getTick());
+            durationList.add(m);
+            noteONList.remove(j);
           }
         }
-      }     
-      
+      }
     }
+
+  /*
+    transfer all notes into the file from noteONList
+    these notes have no NOTE_OFF and use the default duration
+  */
+    while(!noteONList.isEmpty()) {
+      n = noteONList.get(0);
+      pw.printf("%d %d %d\n", randInt(1,4), n.getTick(), n.getDuration());
+      noteONList.remove(0);
+    }
+    
+    //adds the durationList notes to the file
+    while(!durationList.isEmpty()) {
+      m = durationList.get(0);
+      pw.printf("%d %d %d\n", randInt(1,4), m.getTick(), m.getDuration());
+      durationList.remove(0);
+    }    
+    
+    durationList.clear();
+    noteONList.clear();
     pw.close();
   }
   
