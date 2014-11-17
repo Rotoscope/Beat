@@ -55,6 +55,8 @@ void songSelected(File songFile) {
       bm.loadBeatMap(songFile);
       img = bm.makeImage();
 //      mp = new MidiParser(songFile);
+//      mp.getSequencer().start();          //plays the midi file
+//      mp.getSequencer().stop();           //stops playing the midi file
 //      mp.parseMidiFile();
 //      mp.saveNoteTimings(1, "miditest.bm");
     } 
