@@ -68,6 +68,11 @@ void setup() {
 void draw() {
   if(img!=null)
   {
+    if(offset < 0)
+      offset = 0;
+    else if(offset > (img.height - height))
+      offset = img.height - height;
+      
     image(img,0,height - img.height+offset);
   }
 }
@@ -144,6 +149,8 @@ void keyPressed(){
           offset -= speed;
           break;
       }
+      
+      println(offset);
     }
   }
 }
