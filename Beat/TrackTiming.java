@@ -39,13 +39,10 @@ public class TrackTiming {
     return noteList.get(i);
   }
   
-  public void saveToFile(String filename) throws Exception {
-    PrintWriter pw;
+  public List getDurationTiming() {
     List<Note> durationList = new ArrayList<Note>();
     List<Note> noteONList = new ArrayList<Note>();
     Note n, m;
-
-    pw = new PrintWriter(filename);
 
     for(int i = 0; i < noteList.size(); i++) {
       n = noteList.get(i);
@@ -68,26 +65,29 @@ public class TrackTiming {
         }
       }
     }
-
-  /*
-    transfer all notes into the file from noteONList
-    these notes have no NOTE_OFF and use the default duration
-  */
+    
+    //move all notes that does not have a NOTE_OFF to the durationList with its default duration
     while(!noteONList.isEmpty()) {
-      n = noteONList.get(0);
-      pw.printf("%d %d %d\n", randInt(1,4), n.getTick(), n.getDuration());
-      noteONList.remove(0);
+      durationList.add(noteONList.remove(0));
     }
     
+    return durationList;
+  }
+  
+  public void saveToFile(String filename) throws Exception {
+    PrintWriter pw;
+    List<Note> durationList = getDurationTiming();
+    Note n;
+
+    pw = new PrintWriter(filename);
+
     //adds the durationList notes to the file
     while(!durationList.isEmpty()) {
-      m = durationList.get(0);
-      pw.printf("%d %d %d\n", randInt(1,4), m.getTick(), m.getDuration());
+      n = durationList.get(0);
+      pw.printf("%d %d %d\n", randInt(1,4), n.getTick(), n.getDuration());
       durationList.remove(0);
     }    
-    
-    durationList.clear();
-    noteONList.clear();
+
     pw.close();
   }
   
