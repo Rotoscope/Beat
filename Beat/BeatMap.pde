@@ -13,7 +13,7 @@ public class BeatMap {
   private Queue<BeatMapEvent> events;
   private long duration;
   
-  float pixelsPerTick = 0.25;
+  float pixelsPerTick = 0.05;
   int imageWidth = 300;
   short maxLocations = 4;
   
@@ -55,13 +55,13 @@ public class BeatMap {
     String delims = "[ ]+";
     while((line = reader.readLine()) != null) {
       String[] tokens = line.split(delims);
-      short location = (short)Integer.parseInt(tokens[0]);
+      short location = (short)(Integer.parseInt(tokens[0]));
       long tick = Long.parseLong(tokens[1]);
       long duration = Long.parseLong(tokens[2]);
       long endTick = tick + duration;
       
-      if(currentEndTick[location] < endTick) {
-        currentEndTick[location] = endTick;
+      if(currentEndTick[location-1] < endTick) {
+        currentEndTick[location-1] = endTick;
         events.add(new PressTiming(location, tick, duration, this));
       }
     }
@@ -73,7 +73,6 @@ public class BeatMap {
     }
     
     duration = max;
-    
   }
   
   public Queue<BeatMapEvent> getMap() {

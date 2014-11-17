@@ -1,8 +1,8 @@
 public class Note {
   final int DEFAULT_DURATION = 96;
   
-  long tick;
-  int channel, velocity, noteKey, octave, duration;
+  long tick, duration;
+  int channel, velocity, noteKey, octave;
   String noteName, command;
   
   Note(long tic, String com, String nN, int oct, int nK, int vel, int ch) {
@@ -50,11 +50,11 @@ public class Note {
             this.octave == n.getOctave());
   }
   
-  public int getDuration() {
+  public long getDuration() {
     return duration;
   }
   
-  public void setDuration(int i) {
+  public void setDuration(long i) {
     duration = i;
   }
 }
