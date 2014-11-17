@@ -74,6 +74,10 @@ public class TrackTiming {
     return durationList;
   }
   
+  public int getNumEventsToFile() {
+    return getDurationTiming().size();
+  }
+  
   public void saveToFile(String filename) throws Exception {
     PrintWriter pw;
     List<Note> durationList = getDurationTiming();
