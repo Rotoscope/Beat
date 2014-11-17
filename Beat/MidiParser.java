@@ -23,13 +23,14 @@ public class MidiParser {
       metaData = new MetaData(mff);
     
       sequencer = MidiSystem.getSequencer();
-      sequencer.setSequence(sequence);
+      if(sequencer == null) throw new MidiUnavailableException();
+
       
       tracks = sequence.getTracks();
       if(tracks.length > 0) {
         trackTimings = new TrackTiming[tracks.length];
         for(int i = 0; i < trackTimings.length; i++) {
-          trackTimings[i] = new TrackTiming(); 
+           trackTimings[i] = new TrackTiming(); 
         }
       }
   }
@@ -56,6 +57,17 @@ public class MidiParser {
   
   public int numOfTracks() {
     return tracks.length;
+  }
+  
+  public void playSong() {
+    sequencer.open();
+    sequencer.setSequence(sequence);
+    sequencer.start();
+  }
+  
+  public void stopSong() {
+    sequencer.stop();
+    sequencer.close();
   }
   
   //altered code from http://stackoverflow.com/questions/3850688/reading-midi-files-in-java
