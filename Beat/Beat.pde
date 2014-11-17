@@ -82,8 +82,7 @@ public void bmBrowse() {
 
 public void playSong() {
   try {
-    mp.getSequencer().open();
-    mp.getSequencer().start();          //plays the midi file
+    mp.playSong();
   } catch(Exception e) {
     System.out.println(e);
   }
@@ -91,8 +90,7 @@ public void playSong() {
 
 public void stopSong() {
   try {
-    mp.getSequencer().stop();           //stops playing the midi file
-    mp.getSequencer().close();
+    mp.stopSong();
   } catch(Exception e) {
     System.out.println(e);
   }
