@@ -22,6 +22,12 @@ void setup() {
           .setLabel("Browse For Songs")
             .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
               ;
+  
+  cp5.addButton("playSong")
+    .setPosition(     /*need code********/)
+      .setSize(   /*******need code ********/)
+        .setLabel("Play the song")
+          ;
 
   //  BeatMap bm = new BeatMap();
   //  
@@ -46,6 +52,15 @@ public void songBrowse() {
   selectInput("Select a midi file", "songSelected");
 }
 
+public void playSong() {
+  try {
+//    mp.getSequencer().start();          //plays the midi file
+//    mp.getSequencer().stop();           //stops playing the midi file
+  } catch(Exception e) {
+    System.out.println(e);
+  }
+}
+
 void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected" + songFile.getAbsolutePath());
@@ -55,8 +70,6 @@ void songSelected(File songFile) {
       bm.loadBeatMap(songFile);
       img = bm.makeImage();
 //      mp = new MidiParser(songFile);
-//      mp.getSequencer().start();          //plays the midi file
-//      mp.getSequencer().stop();           //stops playing the midi file
 //      mp.parseMidiFile();
 //      mp.saveNoteTimings(1, "miditest.bm");
     } 
