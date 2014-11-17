@@ -59,13 +59,17 @@ public class MidiParser {
     return tracks.length;
   }
   
-  public void playSong() {
-    sequencer.setTickPosition(0);
+  public void playSong() throws Exception {
+    sequencer.open();
+    sequencer.setSequence(sequence);
     sequencer.start();
   }
   
   public void stopSong() {
-    sequencer.stop();
+    if(sequencer.isOpen()) {
+      sequencer.stop();
+      sequencer.close();
+    }
   }
   
   //altered code from http://stackoverflow.com/questions/3850688/reading-midi-files-in-java
