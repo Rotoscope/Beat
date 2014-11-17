@@ -89,11 +89,7 @@ public void playSong() {
 }
 
 public void stopSong() {
-  try {
     mp.stopSong();
-  } catch(Exception e) {
-    System.out.println(e);
-  }
 }
 
 void songSelected(File songFile) {
