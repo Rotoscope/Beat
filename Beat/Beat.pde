@@ -1,9 +1,13 @@
-
+/*
+  
+*/
 import controlP5.*;
 
 ControlP5 cp5;
 
 PImage img = null;
+int backgroundColor = #98B6EA;
+String projectName = "Beats";
 int offset = 0;
 int speed = 5;
 int buttonw = 100;
@@ -25,23 +29,23 @@ void setup() {
           .setLabel("Browse For Songs")
             .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
               ;
-  
+
   cp5.addButton("playSong")
-  .setGroup(gMainMenu)
-    .setPosition(width/2-buttonw/2, 50)
-      .setSize(buttonw, 20)
-        .setLabel("Play the song")
-          .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-          ;
-  
+    .setGroup(gMainMenu)
+      .setPosition(width/2-buttonw/2, 50)
+        .setSize(buttonw, 20)
+          .setLabel("Play the song")
+            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+              ;
+
   cp5.addButton("stopSong")
-  .setGroup(gMainMenu)
-    .setPosition(width/2-buttonw/2, 80)
-      .setSize(buttonw, 20)
-        .setLabel("Stop the song")
-          .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-          ;
-          
+    .setGroup(gMainMenu)
+      .setPosition(width/2-buttonw/2, 80)
+        .setSize(buttonw, 20)
+          .setLabel("Stop the song")
+            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+              ;
+
   cp5.addBang("bmBrowse")
     .setGroup(gMainMenu)
       .setPosition(width/2-buttonw/2, 110)
@@ -49,38 +53,43 @@ void setup() {
           .setLabel("Browse For Beatmaps")
             .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
               ;
-
-  
-  //  BeatMap bm = new BeatMap();
-  //  
-  //  PressTiming tm = new PressTiming((short)1,10L,250L,bm);
-  //  bm.getMap().add(tm);
-  //  bm.getMap().add(new PressTiming((short)2,20L,100L,bm));
-  //  bm.getMap().add(new PressTiming((short)3,320L,1240L,bm));
-  //  bm.getMap().add(new PressTiming((short)3,320L,1240L,bm));
-  //  bm.getMap().add(new PressTiming((short)4,200L,500L,bm));
-  //  
-  //  bm.setDuration(1240L + 320L);
-  //  
-  //  image = bm.makeImage();
+              
+              
+  println(sketchPath);
+  //  cp5.addTextlabel("title")
+  //    .setText(projectName)
+  //      .setPosition(width/2, height-50)
+  //        .setColorValue(#F56707)
+  //         .setFont(createFont("Georgia",20))
+  //         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+  //          ;
 }
 
 void draw() {
-  if(img!=null)
+  background(backgroundColor);
+
+    textSize(32);
+    fill(#F56707);
+    textAlign(CENTER);
+    text(projectName, width/2, height - 50); 
+    
+  if (img!=null)
   {
-    if(offset < 0)
+    if (offset < 0)
       offset = 0;
-    else if(offset > (img.height - height))
+    else if (offset > (img.height - height))
       offset = img.height - height;
-      
-    image(img,0,height - img.height+offset);
+
+    image(img, 0, height - img.height+offset);
   }
 }
 
+// callback for song browsing
 public void songBrowse() {
   selectInput("Select a midi file", "songSelected");
 }
 
+// callback for beatmap browsing
 public void bmBrowse() {
   selectInput("Select a midi file", "bmSelected");
 }
@@ -88,29 +97,31 @@ public void bmBrowse() {
 public void playSong() {
   try {
     mp.playSong();
-  } catch(Exception e) {
+  } 
+  catch(Exception e) {
     System.out.println(e);
   }
 }
 
 public void stopSong() {
-    mp.stopSong();
+  mp.stopSong();
 }
 
 void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected" + songFile.getAbsolutePath());
 
+    String fs = File.separator;
+    String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
     try {   
       mp = new MidiParser(songFile);
       mp.parseMidiFile();
-      for(int i = 0; i < mp.numOfTracks(); i++) {
-        if(mp.getTrackTiming(i).noteList.size() > 0) {
-          mp.saveNoteTimings(i, "miditest" + i + ".bm");
+      for (int i = 0; i < mp.numOfTracks (); i++) {
+        if (mp.getTrackTiming(i).getNumEventsToFile() > 0) {
+          mp.saveNoteTimings(i+1, path + songFile.getName() + "-" + (i+1) + ".bm");
+          println("Saved to file");
         }
       }
-      
-      println("Saved to file");
     } 
     catch(Exception e) {
       System.out.println(e);
@@ -138,19 +149,20 @@ void bmSelected(File bmFile) {
   }
 }
 
-void keyPressed(){
-  if(key == CODED) {
-    if(img != null) {
+void keyPressed() {
+  if (key == CODED) {
+    if (img != null) {
       switch(keyCode) {
-        case UP:
-          offset += speed;
-          break;
-        case DOWN:
-          offset -= speed;
-          break;
+      case UP:
+        offset += speed;
+        break;
+      case DOWN:
+        offset -= speed;
+        break;
       }
-      
+
       println(offset);
     }
   }
 }
+

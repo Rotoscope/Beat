@@ -1,5 +1,5 @@
 public class Note {
-  final int DEFAULT_DURATION = 96;
+  final int DEFAULT_DURATION = 200;
   
   long tick, duration;
   int channel, velocity, noteKey, octave;

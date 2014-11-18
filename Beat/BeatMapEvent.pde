@@ -7,4 +7,12 @@ public abstract class BeatMapEvent {
   long tick;
   long duration;
   abstract void draw(PGraphics pg);
+  
+  public long getTick() {
+    return tick;
+  }
+  
+  public long getDuration() {
+    return duration;
+  }
 }
