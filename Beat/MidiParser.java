@@ -66,7 +66,7 @@ public class MidiParser {
   
   //returns the current position in the sequence
   public long getTickPosition() {
-    return sequencer.getTickPostion();
+    return sequencer.getTickPosition();
   }
   
   public void playSong() throws Exception {
