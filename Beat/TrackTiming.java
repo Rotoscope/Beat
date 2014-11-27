@@ -88,7 +88,7 @@ public class TrackTiming {
     //adds the durationList notes to the file
     while(!durationList.isEmpty()) {
       n = durationList.get(0);
-      pw.printf("%d %d %d\n", (n.getNoteKey() % 12) / 3, n.getTick(), n.getDuration());
+      pw.printf("%d %d %d\n", (n.getNoteKey() % 12) / 3 + 1, n.getTick(), n.getDuration());
       durationList.remove(0);
     }    
 
