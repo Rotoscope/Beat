@@ -25,10 +25,17 @@ public class PressTiming extends BeatMapEvent {
     int boxx = (boxw)*(location - 1);
     int boxy = pg.height - (int(tick*beatmap.pixelsPerTick + boxh));
     
+    int linexs = boxx;
+    int lineys = boxy+boxh;
+    int linexe = boxx + boxw;
+    
     if(pg != null) {
       pg.fill(beatmap.colors[location-1]);
       pg.noStroke();
       pg.rect(boxx,boxy,boxw,boxh);
+      pg.stroke(255);
+      pg.strokeWeight(4);
+      pg.line(linexs,lineys, linexe,lineys);
     } else {
       
     }

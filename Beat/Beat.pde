@@ -91,7 +91,7 @@ public void songBrowse() {
 
 // callback for beatmap browsing
 public void bmBrowse() {
-  selectInput("Select a midi file", "bmSelected");
+  selectInput("Select a beatmap file", "bmSelected");
 }
 
 public void playSong() {
@@ -109,7 +109,7 @@ public void stopSong() {
 
 void songSelected(File songFile) {
   if (songFile != null) {
-    println("You selected" + songFile.getAbsolutePath());
+    println("You selected " + songFile.getAbsolutePath());
 
     String fs = File.separator;
     String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
@@ -143,6 +143,7 @@ void bmSelected(File bmFile) {
     } 
     catch(Exception e) {
       System.out.println(e);
+      //e.printStackTrace();
     }
   } else {
     println("User hit cancel or esc");

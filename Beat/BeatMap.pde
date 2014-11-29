@@ -6,6 +6,8 @@
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Iterator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -17,7 +19,9 @@ public class BeatMap {
   int imageWidth = 300;
   short maxLocations = 4;
   
-  int[] colors = new int[]{#EA1111,#11EA74,#1711EA,#E6EA11};
+  int[] colors = new int[]{#EA1111,#11EA74,#1711EA,#E6EA11,
+                           #EA1111,#11EA74,#1711EA,#E6EA11,
+                           #EA1111,#11EA74,#1711EA,#E6EA11};
   
   public BeatMap() {
     events = new PriorityQueue<BeatMapEvent>(50, new EventComparator());
@@ -49,10 +53,12 @@ public class BeatMap {
   public void loadBeatMap(File file) throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(file));
     
-    long[] currentEndTick = new long[maxLocations];
+    Map<Short, Long> currentEndTick = new HashMap<Short,Long>();
     
     String line = null;
     String delims = "[ ]+";
+    line = reader.readLine();
+    
     while((line = reader.readLine()) != null) {
       String[] tokens = line.split(delims);
       short location = (short)(Integer.parseInt(tokens[0]));
@@ -60,18 +66,23 @@ public class BeatMap {
       long duration = Long.parseLong(tokens[2]);
       long endTick = tick + duration;
       
-      if(currentEndTick[location-1] < endTick) {
-        currentEndTick[location-1] = endTick;
+      if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) < endTick) {
+        currentEndTick.put((short)(location-1),endTick);
         events.add(new PressTiming(location, tick, duration, this));
       }
+      
+      if(location > maxLocations)
+        maxLocations = location;
     }
     
-    long max = currentEndTick[0];
-    for(int i = 1; i < maxLocations; i++) {
-      if(max < currentEndTick[i])
-        max = currentEndTick[i];
+    long max = 0;
+    Iterator<Long> it = currentEndTick.values().iterator();
+    while(it.hasNext()) {
+      long next = it.next();
+      if(max < next)
+        max = next;
     }
-    
+    println("here");
     duration = max;
   }
   
