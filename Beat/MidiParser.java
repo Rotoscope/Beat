@@ -59,6 +59,16 @@ public class MidiParser {
     return tracks.length;
   }
   
+  //returns duration of sequence or 0 if no sequence is set
+  public long getTickLength() {
+    return sequencer.getTickLength();
+  }
+  
+  //returns the current position in the sequence
+  public long getTickPosition() {
+    return sequencer.getTickPosition();
+  }
+  
   public void playSong() throws Exception {
     sequencer.open();
     sequencer.setSequence(sequence);
