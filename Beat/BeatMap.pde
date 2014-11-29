@@ -66,7 +66,7 @@ public class BeatMap {
       long duration = Long.parseLong(tokens[2]);
       long endTick = tick + duration;
       
-      if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) < endTick) {
+      if(currentEndTick.get(location-1) == null || (currentEndTick.get(location-1) < endTick && tick != currentEndTick.get(location-1))) {
         currentEndTick.put((short)(location-1),endTick);
         events.add(new PressTiming(location, tick, duration, this));
       }
