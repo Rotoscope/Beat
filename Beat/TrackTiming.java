@@ -82,17 +82,19 @@ public class TrackTiming {
     PrintWriter pw;
     List<Note> durationList = getDurationTiming();
     Note n;
-
-    pw = new PrintWriter(filename);
-
-    //adds the durationList notes to the file
-    while(!durationList.isEmpty()) {
-      n = durationList.get(0);
-      pw.printf("%d %d %d\n", (n.getNoteKey() % 12) + 1, n.getTick(), n.getDuration());
-      durationList.remove(0);
-    }    
-
-    pw.close();
+    
+    if(!durationList.isEmpty()) {
+      pw = new PrintWriter(filename);
+  
+      //adds the durationList notes to the file
+      while(!durationList.isEmpty()) {
+        n = durationList.get(0);
+        pw.printf("%d %d %d\n", (n.getNoteKey() % 12) + 1, n.getTick(), n.getDuration());
+        durationList.remove(0);
+      }    
+  
+      pw.close();
+    }
   }
   
   static int randInt(int min, int max) {
