@@ -23,7 +23,7 @@ public class PressTiming extends BeatMapEvent {
     int boxh = int(duration*beatmap.pixelsPerTick);
     
     int boxx = (boxw)*(location - 1);
-    int boxy = pg.height - (int(tick*beatmap.pixelsPerTick + boxh));
+    int boxy = pg.height - (int(tick*beatmap.pixelsPerTick + boxh + offset));
     
     int linexs = boxx;
     int lineys = boxy+boxh;
@@ -41,11 +41,32 @@ public class PressTiming extends BeatMapEvent {
     }
   }
   
+  @Override
+  void addToQueue(Map<Short,Queue<BeatMapEvent>> eventQueues) {
+    Queue<BeatMapEvent> queue = eventQueues.get(location);
+    
+    if(queue != null) {
+      queue.add(this);
+    } else {
+      queue = new PriorityQueue<BeatMapEvent>(50, new EventComparator());
+      eventQueues.put(location,queue);
+      queue.add(this);
+    }
+  }
+  
   public void setOffset(long offset) {
     this.offset = offset;
   }
   
   public short getLocation() {
     return location;
+  }
+  
+  public String toString() {
+    String s = "\nPressTiming:\n"
+             + "\n\tlocation: " + location
+             + "\n\ttick: " + tick
+             + "\n\tduration: " + duration;
+    return s;
   }
 }

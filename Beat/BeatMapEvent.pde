@@ -7,6 +7,7 @@ public abstract class BeatMapEvent {
   long tick;
   long duration;
   abstract void draw(PGraphics pg);
+  abstract void addToQueue(Map<Short,Queue<BeatMapEvent>> eventQueues);
   
   public long getTick() {
     return tick;
@@ -15,4 +16,5 @@ public abstract class BeatMapEvent {
   public long getDuration() {
     return duration;
   }
+  
 }

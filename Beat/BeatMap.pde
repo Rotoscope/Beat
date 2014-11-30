@@ -34,6 +34,8 @@ public class BeatMap {
   }
   
   public PImage makeImage() {
+    Queue<BeatMapEvent> tempEvents = new PriorityQueue<BeatMapEvent>(events);
+    
     int imageHeight = int(duration*pixelsPerTick);
     PGraphics pg = createGraphics(imageWidth, imageHeight);
     
@@ -41,8 +43,8 @@ public class BeatMap {
     
     pg.background(#000000);
     
-    while(events.peek() != null) {
-      BeatMapEvent event = events.poll();
+    while(tempEvents.peek() != null) {
+      BeatMapEvent event = tempEvents.poll();
       event.draw(pg);
     }
     
@@ -66,7 +68,7 @@ public class BeatMap {
       long duration = Long.parseLong(tokens[2]);
       long endTick = tick + duration;
       
-      if(currentEndTick.get(location-1) == null || (currentEndTick.get(location-1) < endTick && tick != currentEndTick.get(location-1))) {
+      if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) < endTick) {
         currentEndTick.put((short)(location-1),endTick);
         events.add(new PressTiming(location, tick, duration, this));
       }
@@ -82,12 +84,27 @@ public class BeatMap {
       if(max < next)
         max = next;
     }
-    println("here");
     duration = max;
   }
   
   public Queue<BeatMapEvent> getMap() {
     return events;
+  }
+  
+  public Map<Short,Queue<BeatMapEvent>> getEventQueues() {
+    Map<Short,Queue<BeatMapEvent>> eventQueues = new HashMap<Short,Queue<BeatMapEvent>>();
+    
+    Iterator<BeatMapEvent> it = events.iterator();
+
+    println(events.size());
+
+    int i = 0;
+    while(it.hasNext()) {
+      println(++i);
+      it.next().addToQueue(eventQueues);
+    }
+    
+    return eventQueues;
   }
   
   public void setMap(Queue<BeatMapEvent> events) {
@@ -100,16 +117,5 @@ public class BeatMap {
   
   public void setDuration(long dur) {
     this.duration = dur;
-  }
-  
-  class EventComparator implements Comparator<BeatMapEvent> {
-    public int compare(BeatMapEvent e1, BeatMapEvent e2) {
-      if(e1.tick > e2.tick)
-        return 1;
-      else if (e1.tick < e2.tick)
-        return -1;
-      else
-        return 0;
-    }
   }
 }
