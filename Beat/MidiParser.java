@@ -2,7 +2,7 @@ import java.io.File;
 import javax.sound.midi.*;
 
 public class MidiParser {
-  public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+  public final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
   
   String filepath;
   Sequencer sequencer;
