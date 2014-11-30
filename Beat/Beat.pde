@@ -156,7 +156,11 @@ void bmSelected(File bmFile) {
       bm.loadBeatMap(bmFile);
       img = bm.makeImage();
       offset = 0;
-//      events = bm.getMap();
+      Map<Short,Queue<BeatMapEvent>> eventQueues = bm.getEventQueues();
+      
+      for(int i = 0; i < events.length; i++)
+        events[i] = eventQueues.get(i);
+      
       release_events = new Queue[events.length];
       for(int i = 0; i < release_events.length; i++)
         release_events[i] = new LinkedList<BeatMapEvent>();
