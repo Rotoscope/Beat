@@ -251,7 +251,7 @@ void keyReleased() {
           long accuracy = Math.abs(mp.getTickPosition() - release_events[0].poll().getEndTick());
           
           if(accuracy <= MARGIN_OF_ERROR) {
-            scores[0]++;
+            scores[0]++;  //scores are rated on pressing and releasing on time
           }
         }
         break;
