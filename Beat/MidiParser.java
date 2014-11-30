@@ -1,3 +1,8 @@
+/*
+*  MidiParser: class to hold the parse the midi file into separate tracks with note timings
+*              allows playback of the midi file
+*/
+
 import java.io.File;
 import javax.sound.midi.*;
 
@@ -80,6 +85,10 @@ public class MidiParser {
       sequencer.stop();
       sequencer.close();
     }
+  }
+  
+  public void restartSong() {
+    sequencer.setTickPosition(0);
   }
   
   //altered code from http://stackoverflow.com/questions/3850688/reading-midi-files-in-java
