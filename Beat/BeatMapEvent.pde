@@ -17,4 +17,8 @@ public abstract class BeatMapEvent {
     return duration;
   }
   
+  public long getEndTick() {
+    return tick + duration;
+  }
+  
 }
