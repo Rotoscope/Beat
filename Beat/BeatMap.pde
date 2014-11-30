@@ -95,12 +95,7 @@ public class BeatMap {
     Map<Short,Queue<BeatMapEvent>> eventQueues = new HashMap<Short,Queue<BeatMapEvent>>();
     
     Iterator<BeatMapEvent> it = events.iterator();
-
-    println(events.size());
-
-    int i = 0;
     while(it.hasNext()) {
-      println(++i);
       it.next().addToQueue(eventQueues);
     }
     
@@ -117,5 +112,9 @@ public class BeatMap {
   
   public void setDuration(long dur) {
     this.duration = dur;
+  }
+  
+  public short getLocationNumber() {
+    return maxLocations;
   }
 }

@@ -12,6 +12,7 @@ String projectName = "Beats";
 int offset = 0;
 int speed = 5;
 int buttonw = 100;
+int lineh = 20;
 
 String mode;
 boolean[] flags;  //is button pushed down
@@ -26,7 +27,7 @@ BeatMap bm;
 void setup() {
   size(800, 600);
 
-  mode = "SELECT";
+  mode = "MENU";
   flags = new boolean[4];
   for(int i = 0; i < 4; i++)
     flags[i] = false;
@@ -34,10 +35,15 @@ void setup() {
   
   cp5 = new ControlP5(this);
 
-  Group gMainMenu = cp5.addGroup("main menu");
+  Group gMenu = cp5.addGroup("MENU");
+  Group gSelect = cp5.addGroup("SELECT");
+  Group gPlay = cp5.addGroup("PLAY");
+  Group gAuthor = cp5.addGroup("AUTHOR");
+
+  
 
   cp5.addBang("songBrowse")
-    .setGroup(gMainMenu)
+    .setGroup(gMenu)
       .setPosition(width/2-buttonw/2, 20)
         .setSize(buttonw, 20)
           .setLabel("Browse For Songs")
@@ -45,7 +51,7 @@ void setup() {
               ;
 
   cp5.addButton("playSong")
-    .setGroup(gMainMenu)
+    .setGroup(gMenu)
       .setPosition(width/2-buttonw/2, 50)
         .setSize(buttonw, 20)
           .setLabel("Play the song")
@@ -53,7 +59,7 @@ void setup() {
               ;
 
   cp5.addButton("stopSong")
-    .setGroup(gMainMenu)
+    .setGroup(gMenu)
       .setPosition(width/2-buttonw/2, 80)
         .setSize(buttonw, 20)
           .setLabel("Stop the song")
@@ -61,22 +67,21 @@ void setup() {
               ;
 
   cp5.addBang("bmBrowse")
-    .setGroup(gMainMenu)
+    .setGroup(gMenu)
       .setPosition(width/2-buttonw/2, 110)
         .setSize(buttonw, 20)
           .setLabel("Browse For Beatmaps")
             .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
               ;
               
+  cp5.addBang("songBrowseNoParse")
+    .setGroup(gMenu)
+      .setPosition(width/2-buttonw/2, 140)
+        .setSize(buttonw, 20)
+          .setLabel("Load Song for Playing")
+            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+              ;
               
-  println(sketchPath);
-  //  cp5.addTextlabel("title")
-  //    .setText(projectName)
-  //      .setPosition(width/2, height-50)
-  //        .setColorValue(#F56707)
-  //         .setFont(createFont("Georgia",20))
-  //         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-  //          ;
 }
 
 void draw() {
@@ -89,18 +94,31 @@ void draw() {
     
   if (img!=null)
   {
-    if (offset < 0)
-      offset = 0;
-    else if (offset > (img.height - height))
-      offset = img.height - height;
+//    if (offset < 0)
+//      offset = 0;
+//    else if (offset > (img.height - height))
+//      offset = img.height - height;
+//      
+    if(mp != null) {
+      offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
+    }
 
-    image(img, 0, height - img.height+offset);
+    image(img, 0, height - img.height+offset - lineh);
+    
+    // draw timing line
+    stroke(#98F79E);
+    strokeWeight(4);
+    line(0,height-lineh, img.width,height-lineh);
   }
 }
 
 // callback for song browsing
 public void songBrowse() {
   selectInput("Select a midi file", "songSelected");
+}
+
+public void songBrowseNoParse() {
+  selectInput("Select a midi file", "songSelectedNoParse");
 }
 
 // callback for beatmap browsing
@@ -148,6 +166,23 @@ void songSelected(File songFile) {
   }
 }
 
+void songSelectedNoParse(File songFile) {
+  if (songFile != null) {
+    println("You selected " + songFile.getAbsolutePath());
+
+    String fs = File.separator;
+    String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
+    try {   
+      mp = new MidiParser(songFile);
+      } 
+    catch(Exception e) {
+      System.out.println(e);
+    }
+  } else {
+    println("User hit cancel or esc");
+  }
+}
+
 void bmSelected(File bmFile) {
   if (bmFile != null) {
     println("You selected" + bmFile.getAbsolutePath());
@@ -155,7 +190,7 @@ void bmSelected(File bmFile) {
     try {   
       bm = new BeatMap();
       bm.loadBeatMap(bmFile);
-      if(mode.equals("SELECT")) {
+      if(mode.equals("MENU")) {
         img = bm.makeImage();
         offset = 0;
       }
@@ -163,6 +198,7 @@ void bmSelected(File bmFile) {
       if(bm != null)
         Queue<BeatMapEvent> allEvents = bm.getMap();
       */
+      /*
       Map<Short,Queue<BeatMapEvent>> eventQueues = bm.getEventQueues();
       
       for(int i = 0; i < events.length; i++)
@@ -171,6 +207,7 @@ void bmSelected(File bmFile) {
       release_events = new Queue[events.length];
       for(int i = 0; i < release_events.length; i++)
         release_events[i] = new LinkedList<BeatMapEvent>();
+      */
     } 
     catch(Exception e) {
       System.out.println(e);
@@ -303,9 +340,9 @@ void keyReleased() {
 void play() {
   if(allEvents.peek().getTick() == mp.getTickPosition()) {
     BeatMapEvent mapEvent = allEvents.poll();
-    short i = mapEvent.getLocation();
-    if(Keyboard.getEventKey() == Keyboard.KEY_D) {
-    }
+  //  short i = mapEvent.getLocation();
+//    if(Keyboard.getEventKey() == Keyboard.KEY_D) {
+  //  }
   }
 
 }
