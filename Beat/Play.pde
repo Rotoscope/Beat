@@ -11,7 +11,7 @@ public class Play extends BeatGUIBase {
 
   public void initialize() {
     flags = new boolean[4];
-    for(int i = 0; i < 4; i++)
+    for(short i = 0; i < 4; i++)
       flags[i] = false;
     scores = new int[5];
     
@@ -19,6 +19,12 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
+    for(short i = 0; i < 4; i++) {
+      long acc = mp.getTickPosition() - eventMap.get(i).peek().getTick();
+      if(acc >= MARGIN_OF_ERROR * 5) {
+        eventMap.get(i).poll();
+      }
+    }
   }
 
   public void keyPressed() {
@@ -45,7 +51,7 @@ public class Play extends BeatGUIBase {
   
             if (accuracy < MARGIN_OF_ERROR * 5) {
               if (accuracy <= MARGIN_OF_ERROR) {
-                scores[1]++;
+                scores[0]++;
               }
               event = eventMap.get(1).poll();
               event.setTick(event.getEndTick());
@@ -60,7 +66,7 @@ public class Play extends BeatGUIBase {
   
             if (accuracy < MARGIN_OF_ERROR * 5) {
               if (accuracy <= MARGIN_OF_ERROR) {
-                scores[2]++;
+                scores[0]++;
               }
               event = eventMap.get(2).poll();
               event.setTick(event.getEndTick());
@@ -75,7 +81,7 @@ public class Play extends BeatGUIBase {
   
             if (accuracy < MARGIN_OF_ERROR * 5) {
               if (accuracy <= MARGIN_OF_ERROR) {
-                scores[3]++;
+                scores[0]++;
               }
               event = eventMap.get(3).poll();
               event.setTick(event.getEndTick());
@@ -107,7 +113,7 @@ public class Play extends BeatGUIBase {
             long accuracy = Math.abs(mp.getTickPosition() - release_events.get(1).poll().getTick());
   
             if (accuracy <= MARGIN_OF_ERROR) {
-              scores[1]++;
+              scores[0]++;
             }
           }
           break;
@@ -117,7 +123,7 @@ public class Play extends BeatGUIBase {
             long accuracy = Math.abs(mp.getTickPosition() - release_events.get(2).poll().getTick());
   
             if (accuracy <= MARGIN_OF_ERROR) {
-              scores[2]++;
+              scores[0]++;
             }
           }
           break;
@@ -127,7 +133,7 @@ public class Play extends BeatGUIBase {
             long accuracy = Math.abs(mp.getTickPosition() - release_events.get(3).poll().getTick());
   
             if (accuracy <= MARGIN_OF_ERROR) {
-              scores[3]++;
+              scores[0]++;
             }
           }
           break;
