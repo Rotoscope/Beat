@@ -15,11 +15,6 @@ int buttonw = 100;
 int lineh = 20;
 
 String mode;
-boolean[] flags;  //is button pushed down
-Queue<BeatMapEvent> allEvents;  //option 2 of playing check each event and check if a key is pressed
-Queue<BeatMapEvent>[] events, release_events;  //option 1: user pushes key and check if there is an event near it
-int[] scores;
-final int MARGIN_OF_ERROR = 10;
 
 MidiParser mp;
 BeatMap bm;
@@ -30,10 +25,6 @@ void setup() {
   size(800, 600);
 
   mode = "MENU";
-  flags = new boolean[4];
-  for(int i = 0; i < 4; i++)
-    flags[i] = false;
-  scores = new int[5];
   
   cp5 = new ControlP5(this);
 
@@ -125,20 +116,6 @@ void bmSelected(File bmFile) {
         img = bm.makeImage();
         offset = 0;
       }
-      /*
-      if(bm != null)
-        Queue<BeatMapEvent> allEvents = bm.getMap();
-      */
-      /*
-      Map<Short,Queue<BeatMapEvent>> eventQueues = bm.getEventQueues();
-      
-      for(int i = 0; i < events.length; i++)
-        events[i] = eventQueues.get(i);
-      
-      release_events = new Queue[events.length];
-      for(int i = 0; i < release_events.length; i++)
-        release_events[i] = new LinkedList<BeatMapEvent>();
-      */
     } 
     catch(Exception e) {
       System.out.println(e);
@@ -155,14 +132,4 @@ void keyPressed() {
 
 void keyReleased() {
   currentGUI.keyReleased();
-}
-
-void play() {
-  if(allEvents.peek().getTick() == mp.getTickPosition()) {
-    BeatMapEvent mapEvent = allEvents.poll();
-  //  short i = mapEvent.getLocation();
-//    if(Keyboard.getEventKey() == Keyboard.KEY_D) {
-  //  }
-  }
-
 }
