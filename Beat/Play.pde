@@ -1,10 +1,17 @@
 public class Play extends BeatGUIBase {
+  final long MARGIN_OF_ERROR = 10;
+  int[] scores;
+  boolean[] flags;
 
   public Play(ControlP5 cp5, Group group) {
     super(cp5, group);
   }
 
   public void initialize() {
+    flags = new boolean[4];
+    for(int i = 0; i < 4; i++)
+      flags[i] = false;
+    scores = new int[5];
   }
 
   public void draw() {
