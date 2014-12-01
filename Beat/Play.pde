@@ -24,14 +24,14 @@ public class Play extends BeatGUIBase {
         long acc = eventMap.get(i).peek().getTick() - mp.getTickPosition();
         if(acc >= MARGIN_OF_ERROR * 5) {
           eventMap.get(i).poll();
-          score[4]++;
+          scores[4]++;
         }
       }
       if(release_events.get(i) != null) {
         long acc = release_events.get(i).peek().getTick() - mp.getTickPosition();
         if(acc >= MARGIN_OF_ERROR * 5) {
           release_events.get(i).poll();
-          score[4]++;
+          scores[4]++;
         }
       }
     }
