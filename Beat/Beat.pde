@@ -23,6 +23,8 @@ final int MARGIN_OF_ERROR = 10;
 
 MidiParser mp;
 BeatMap bm;
+BeatGUIBase currentGUI, menu, play, select, customize;
+Authoring author;
 
 void setup() {
   size(800, 600);
@@ -36,80 +38,28 @@ void setup() {
   cp5 = new ControlP5(this);
 
   Group gMenu = cp5.addGroup("MENU");
-  Group gSelect = cp5.addGroup("SELECT");
-  Group gPlay = cp5.addGroup("PLAY");
-  Group gAuthor = cp5.addGroup("AUTHOR");
-
+  menu = new MainMenu(cp5, gMenu);
+  menu.initialize();
+  currentGUI = menu;
   
-
-  cp5.addBang("songBrowse")
-    .setGroup(gMenu)
-      .setPosition(width/2-buttonw/2, 20)
-        .setSize(buttonw, 20)
-          .setLabel("Browse For Songs")
-            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-              ;
-
-  cp5.addButton("playSong")
-    .setGroup(gMenu)
-      .setPosition(width/2-buttonw/2, 50)
-        .setSize(buttonw, 20)
-          .setLabel("Play the song")
-            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-              ;
-
-  cp5.addButton("stopSong")
-    .setGroup(gMenu)
-      .setPosition(width/2-buttonw/2, 80)
-        .setSize(buttonw, 20)
-          .setLabel("Stop the song")
-            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-              ;
-
-  cp5.addBang("bmBrowse")
-    .setGroup(gMenu)
-      .setPosition(width/2-buttonw/2, 110)
-        .setSize(buttonw, 20)
-          .setLabel("Browse For Beatmaps")
-            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-              ;
-              
-  cp5.addBang("songBrowseNoParse")
-    .setGroup(gMenu)
-      .setPosition(width/2-buttonw/2, 140)
-        .setSize(buttonw, 20)
-          .setLabel("Load Song for Playing")
-            .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-              ;
-              
+  Group gSelect = cp5.addGroup("SELECT");
+  select = new Select(cp5, gSelect);
+  select.initialize();
+  gSelect.hide();
+  
+  Group gPlay = cp5.addGroup("PLAY");
+  play = new Play(cp5, gPlay);
+  play.initialize();
+  gPlay.hide();
+  
+  Group gAuthor = cp5.addGroup("AUTHOR");
+  author = new Authoring(cp5, gAuthor);
+  author.initialize();
+  gAuthor.hide();
 }
 
 void draw() {
-  background(backgroundColor);
-
-    textSize(32);
-    fill(#F56707);
-    textAlign(CENTER);
-    text(projectName, width/2, height - 50); 
-    
-  if (img!=null)
-  {
-//    if (offset < 0)
-//      offset = 0;
-//    else if (offset > (img.height - height))
-//      offset = img.height - height;
-//      
-    if(mp != null) {
-      offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
-    }
-
-    image(img, 0, height - img.height+offset - lineh);
-    
-    // draw timing line
-    stroke(#98F79E);
-    strokeWeight(4);
-    line(0,height-lineh, img.width,height-lineh);
-  }
+  currentGUI.draw();
 }
 
 // callback for song browsing
@@ -117,31 +67,7 @@ public void songBrowse() {
   selectInput("Select a midi file", "songSelected");
 }
 
-public void songBrowseNoParse() {
-  selectInput("Select a midi file", "songSelectedNoParse");
-}
-
-// callback for beatmap browsing
-public void bmBrowse() {
-  selectInput("Select a beatmap file", "bmSelected");
-}
-
-public void playSong() {
-  try {
-    if(mp != null)
-      mp.playSong();
-    else
-      System.out.println("No song was selected");
-  } 
-  catch(Exception e) {
-    System.out.println(e);
-  }
-}
-
-public void stopSong() {
-  mp.stopSong();
-}
-
+// this needs to be here because of how selectInput works
 void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
@@ -151,10 +77,15 @@ void songSelected(File songFile) {
     try {   
       mp = new MidiParser(songFile);
       mp.parseMidiFile();
+      
+      int trackcount = 0;
       for (int i = 0; i < mp.numOfTracks (); i++) {
         if (mp.getTrackTiming(i).getNumEventsToFile() > 0) {
           mp.saveNoteTimings(i+1, path + songFile.getName() + "-" + (i+1) + ".bm");
           println("Saved to file");
+          BeatMap bm = mp.makeBeatMap(i+1);
+          author.beatmaps.add(bm);
+          author.images.add(bm.makeImage());
         }
       }
     } 
@@ -219,122 +150,11 @@ void bmSelected(File bmFile) {
 }
 
 void keyPressed() {
-  if(mode.equals("SELECT") && img != null) {
-    if(key == CODED) {
-      switch(keyCode) {
-        case UP:
-          offset += speed;
-          break;
-        case DOWN:
-          offset -= speed;
-          break;
-      }
-  
-      println(offset);
-    }
-  } else if(mode.equals("PLAY") && mp != null && bm != null && events != null) {
-    switch(key) {
-      case 'D':
-        if(flags[0] == false) {
-          long accuracy = Math.abs(mp.getTickPosition() - events[0].peek().getTick());
-          //only consider the score if the button pushed is near a note
-          if(accuracy < MARGIN_OF_ERROR * 5) {
-            if(accuracy <= MARGIN_OF_ERROR) {
-              scores[0]++;
-            }
-            release_events[0].add(events[0].poll());
-          }
-        }
-        flags[0] = true;
-        break;
-      case 'F':
-        if(flags[1] == false) {
-          long accuracy = Math.abs(mp.getTickPosition() - events[1].peek().getTick());
-
-          if(accuracy < MARGIN_OF_ERROR * 5) {
-            if(accuracy <= MARGIN_OF_ERROR) {
-              scores[1]++;
-            }
-            release_events[1].add(events[1].poll());
-          }
-        }
-        flags[1] = true;
-        break;
-      case 'J':
-        if(flags[2] == false) {
-          long accuracy = Math.abs(mp.getTickPosition() - events[2].peek().getTick());
-
-          if(accuracy < MARGIN_OF_ERROR * 5) {
-            if(accuracy <= MARGIN_OF_ERROR) {
-              scores[2]++;
-            }
-            release_events[2].add(events[2].poll());
-          }
-        }
-        flags[2] = true;
-        break;
-      case 'K':
-        if(flags[3] == false) {
-          long accuracy = Math.abs(mp.getTickPosition() - events[3].peek().getTick());
-
-          if(accuracy < MARGIN_OF_ERROR * 5) {
-            if(accuracy <= MARGIN_OF_ERROR) {
-              scores[3]++;
-            }
-            release_events[3].add(events[3].poll());
-          }
-        }
-        flags[3] = true;
-        break;
-    }
-  }
+  currentGUI.keyPressed();
 }
 
 void keyReleased() {
-  if(mode.equals("PLAY") && mp != null && bm != null) {
-    switch(key) {
-      case 'D':
-        flags[0] = false;
-        if(!release_events[0].isEmpty()) {
-          long accuracy = Math.abs(mp.getTickPosition() - release_events[0].poll().getEndTick());
-          
-          if(accuracy <= MARGIN_OF_ERROR) {
-            scores[0]++;  //scores are rated on pressing and releasing on time
-          }
-        }
-        break;
-      case 'F':
-        flags[1] = false;
-        if(!release_events[1].isEmpty()) {
-          long accuracy = Math.abs(mp.getTickPosition() - release_events[1].poll().getEndTick());
-          
-          if(accuracy <= MARGIN_OF_ERROR) {
-            scores[1]++;
-          }
-        }
-        break;
-      case 'J':
-        flags[2] = false;
-        if(!release_events[2].isEmpty()) {
-          long accuracy = Math.abs(mp.getTickPosition() - release_events[2].poll().getEndTick());
-          
-          if(accuracy <= MARGIN_OF_ERROR) {
-            scores[2]++;
-          }
-        }
-        break;
-      case 'K':
-        flags[3] = false;
-        if(!release_events[3].isEmpty()) {
-          long accuracy = Math.abs(mp.getTickPosition() - release_events[3].poll().getEndTick());
-          
-          if(accuracy <= MARGIN_OF_ERROR) {
-            scores[3]++;
-          }
-        }
-        break;
-    }
-  }
+  currentGUI.keyReleased();
 }
 
 void play() {
