@@ -21,6 +21,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void keyPressed() {
+  /*
     if (mp != null && bm != null && events != null) {
       switch(key) {
       case 'D':
@@ -77,9 +78,11 @@ public class Play extends BeatGUIBase {
         break;
       }
     }
+    */
   }
 
   public void keyReleased() {
+  /*
     if (mp != null && bm != null) {
       switch(key) {
       case 'D':
@@ -124,6 +127,7 @@ public class Play extends BeatGUIBase {
         break;
       }
     }
+    */
   }
 }
 
