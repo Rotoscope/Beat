@@ -42,61 +42,25 @@ public class Play extends BeatGUIBase {
       switch(key) {
         case 'D':
           if (flags[0] == false) {
-            long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(0).peek().getTick());
-            //only consider the score if the button pushed is near a note
-            if (accuracy < MARGIN_OF_ERROR * 5) {
-              if (accuracy <= MARGIN_OF_ERROR) {
-                scores[0]++;
-              }
-              event = eventMap.get(0).poll();
-              event.setTick(event.getEndTick());
-              event.addToQueue(release_events);
-            }
+            checkPressAccuracy(0);
           }
           flags[0] = true;
           break;
         case 'F':
           if (flags[1] == false) {
-            long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(1).peek().getTick());
-  
-            if (accuracy < MARGIN_OF_ERROR * 5) {
-              if (accuracy <= MARGIN_OF_ERROR) {
-                scores[0]++;
-              }
-              event = eventMap.get(1).poll();
-              event.setTick(event.getEndTick());
-              event.addToQueue(release_events);
-            }
+            checkPressAccuracy(1);
           }
           flags[1] = true;
           break;
         case 'J':
           if (flags[2] == false) {
-            long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(2).peek().getTick());
-  
-            if (accuracy < MARGIN_OF_ERROR * 5) {
-              if (accuracy <= MARGIN_OF_ERROR) {
-                scores[0]++;
-              }
-              event = eventMap.get(2).poll();
-              event.setTick(event.getEndTick());
-              event.addToQueue(release_events);
-            }
+            checkPressAccuracy(2);
           }
           flags[2] = true;
           break;
         case 'K':
           if (flags[3] == false) {
-            long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(3).peek().getTick());
-  
-            if (accuracy < MARGIN_OF_ERROR * 5) {
-              if (accuracy <= MARGIN_OF_ERROR) {
-                scores[0]++;
-              }
-              event = eventMap.get(3).poll();
-              event.setTick(event.getEndTick());
-              event.addToQueue(release_events);
-            }
+            checkPressAccuracy(3);
           }
           flags[3] = true;
           break;
@@ -105,48 +69,51 @@ public class Play extends BeatGUIBase {
   }
 
   public void keyReleased() {
-    if (mp != null && bm != null) {
+    if (mp != null && bm != null && release_events != null) {
       switch(key) {
         case 'D':
           flags[0] = false;
-          if (release_events.get(0) != null) {
-            long accuracy = Math.abs(mp.getTickPosition() - release_events.get(0).poll().getTick());
-  
-            if (accuracy <= MARGIN_OF_ERROR) {
-              scores[0]++;  //scores are rated on pressing and releasing on time
-            }
-          }
+          checkReleaseAccuracy(0);
           break;
         case 'F':
           flags[1] = false;
-          if (release_events.get(1) != null) {
-            long accuracy = Math.abs(mp.getTickPosition() - release_events.get(1).poll().getTick());
-  
-            if (accuracy <= MARGIN_OF_ERROR) {
-              scores[0]++;
-            }
-          }
+          checkReleaseAccuracy(1);
           break;
         case 'J':
           flags[2] = false;
-          if (release_events.get(2) != null) {
-            long accuracy = Math.abs(mp.getTickPosition() - release_events.get(2).poll().getTick());
-  
-            if (accuracy <= MARGIN_OF_ERROR) {
-              scores[0]++;
-            }
-          }
+          checkReleaseAccuracy(2);
           break;
         case 'K':
           flags[3] = false;
-          if (release_events.get(3) != null) {
-            long accuracy = Math.abs(mp.getTickPosition() - release_events.get(3).poll().getTick());
-  
-            if (accuracy <= MARGIN_OF_ERROR) {
-              scores[0]++;
-            }
-          }
+          checkReleaseAccuracy(3);
           break;
+      }
+    }
+  }
+
+  public void checkPressAccuracy(int i) {
+    if(eventMap.get(i) != null) {
+      long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(i).peek().getTick());
+      //only consider the score if the button pushed is near a note
+      if (accuracy < MARGIN_OF_ERROR * 5) {
+        if (accuracy <= MARGIN_OF_ERROR) {
+          scores[0]++;
+        }
+        
+        
+        event = eventMap.get(i).poll();
+        event.setTick(event.getEndTick());
+        event.addToQueue(release_events);
+      }
+    }
+  }
+
+  public void checkReleaseAccuracy(int i) {
+    if(release_events.get(i) != null) {
+      long accuracy = Math.abs(mp.getTickPosition() - release_events.get(3).poll().getTick());
+  
+      if (accuracy <= MARGIN_OF_ERROR) {
+        scores[0]++;
       }
     }
   }
