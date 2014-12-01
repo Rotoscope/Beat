@@ -17,8 +17,12 @@ public abstract class BeatMapEvent {
     return duration;
   }
   
+  //bottom used in play
   public long getEndTick() {
     return tick + duration;
   }
   
+  public void setTick(long tick) {
+    this.tick = tick;
+  }  
 }
