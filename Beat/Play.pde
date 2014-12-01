@@ -14,7 +14,7 @@ public class Play extends BeatGUIBase {
       flags[i] = false;
     scores = new int[5];
     
-    eventMap =  bm.getEventQueues()
+    eventMap =  bm.getEventQueues();
   }
 
   public void draw() {
