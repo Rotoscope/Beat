@@ -2,6 +2,7 @@ public class Play extends BeatGUIBase {
   final long MARGIN_OF_ERROR = 10;
   int[] scores;
   boolean[] flags;
+  Map<Short,Queue<BeatMapEvent>> eventMap;
 
   public Play(ControlP5 cp5, Group group) {
     super(cp5, group);
@@ -12,6 +13,8 @@ public class Play extends BeatGUIBase {
     for(int i = 0; i < 4; i++)
       flags[i] = false;
     scores = new int[5];
+    
+    eventMap =  bm.getEventQueues()
   }
 
   public void draw() {
