@@ -20,9 +20,19 @@ public class Play extends BeatGUIBase {
 
   public void draw() {
     for(short i = 0; i < 4; i++) {
-      long acc = mp.getTickPosition() - eventMap.get(i).peek().getTick();
-      if(acc >= MARGIN_OF_ERROR * 5) {
-        eventMap.get(i).poll();
+      if(eventMap.get(i) != null) {
+        long acc = eventMap.get(i).peek().getTick() - mp.getTickPosition();
+        if(acc >= MARGIN_OF_ERROR * 5) {
+          eventMap.get(i).poll();
+          score[4]++;
+        }
+      }
+      if(release_events.get(i) != null) {
+        long acc = release_events.get(i).peek().getTick() - mp.getTickPosition();
+        if(acc >= MARGIN_OF_ERROR * 5) {
+          release_events.get(i).poll();
+          score[4]++;
+        }
       }
     }
   }
