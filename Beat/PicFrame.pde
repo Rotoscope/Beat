@@ -150,3 +150,34 @@ class PicFrame
     return disph;
   }
 }
+
+/*****************
+* Stanley's Image Center Code
+*****************/
+
+/*
+
+//checks the scaling; if it is wider or taller than it'll scale appropriately
+int resChk(PImage aImg) {
+  if((double)aImg.width/aImg.height > areaWidth/areaHeight) //700x500 single image display 
+    return 1;
+  else if((double)aImg.width/aImg.height < areaWidth/areaHeight)
+    return -1;
+  else 
+    return 0;
+}
+
+//k was used for the offset when sliding the images
+void singleImage(int index, int k) {
+  int i = sResChk(img[index]);
+  if(i == -1 || i == 0) {
+    float wid = img[index].width * areaHeight / img[index].height;
+    image(img[index], k + (areaWidth - wid) / 2 + borderSize, borderSize, wid, areaHeight);
+  } else if(i == 1) {
+    float hei = img[index].height * areaWidth / img[index].width;
+    image(img[index], k + borderSize, (areaHeight - hei) / 2 + borderSize, areaWidth, hei);
+  }
+}
+
+*/
+
