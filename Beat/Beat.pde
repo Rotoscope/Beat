@@ -14,7 +14,7 @@ int speed = 5;
 int buttonw = 100;
 int lineh = 20;
 
-String mode;
+Map<Short,Queue<BeatMapEvent>> eventMap;  //used for play
 
 MidiParser mp;
 BeatMap bm;
@@ -23,8 +23,6 @@ Authoring author;
 
 void setup() {
   size(800, 600);
-
-  mode = "MENU";
   
   cp5 = new ControlP5(this);
 
@@ -116,6 +114,7 @@ void bmSelected(File bmFile) {
         img = bm.makeImage();
         offset = 0;
       }
+      eventMap = bm.getEventQueues();
     } 
     catch(Exception e) {
       System.out.println(e);
