@@ -2,7 +2,6 @@
   
 */
 import controlP5.*;
-import java.util.LinkedList;
 
 ControlP5 cp5;
 
