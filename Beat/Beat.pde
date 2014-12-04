@@ -90,8 +90,6 @@ void songSelectedNoParse(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
 
-    String fs = File.separator;
-    String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
     try {   
       mp = new MidiParser(songFile);
       } 
@@ -110,10 +108,8 @@ void bmSelected(File bmFile) {
     try {   
       bm = new BeatMap();
       bm.loadBeatMap(bmFile);
-      if(mode.equals("MENU")) {
-        img = bm.makeImage();
-        offset = 0;
-      }
+      img = bm.makeImage();
+      offset = 0;
       eventMap = bm.getEventQueues();
     } 
     catch(Exception e) {
