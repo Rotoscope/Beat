@@ -28,18 +28,20 @@ public class MainMenu extends BeatGUIBase {
         .setGroup(group)
           .setPosition(width/2-buttonw/2, 110)
             .setSize(buttonw, 20)
-              .setLabel("Browse For Beatmaps")
-                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;
+              .setTriggerEvent(Bang.RELEASE)
+                .setLabel("Browse For Beatmaps")
+                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                    ;
 
     cp5.addBang("songBrowseNoParse")
       .plugTo(this)
         .setGroup(group)
           .setPosition(width/2-buttonw/2, 20)
             .setSize(buttonw, 20)
-              .setLabel("Load Song for Playing")
-                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;
+              .setTriggerEvent(Bang.RELEASE)
+                .setLabel("Load Song for Playing")
+                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                    ;
 
     cp5.addBang("authoring")
       .plugTo(this)
