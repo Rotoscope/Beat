@@ -89,10 +89,18 @@ public class Select extends BeatGUIBase {
     background(backgroundColor);
   
     if(mp != null) {
+      if(newSong) {   
+        resetSongMetaData();
+        setSongMetaData();
+        newSong = false;
+      }
       songText = mp.getFilePath() + "\n\n" + title + "\n\n" + author + "\n\n" + copyright + "\n\n" + date + "\n\n" + comment;
       songArea.setText(songText);
     }
     if(bm != null) {
+      if(newBM) {
+        newBM = false;
+      }
       bmArea.setText(bm.getFilePath());
     }
   }
@@ -109,56 +117,9 @@ public class Select extends BeatGUIBase {
   }
   
   public void bmBrowse() {
-    selectInput("Select a beatmap file", "bmSelected");
-  }
-  
-  void songSelectedNoParse(File songFile) {
-    if (songFile == null) {
-      println("User hit cancel or esc");
-    } else if(songFile.isDirectory()) {
-      println("\"" + songFile + "\" is a directory.");
-    } else if(songFile.getPath().endsWith(".mid")) {
-      println("You selected " + songFile.getAbsolutePath());
-      
-      try {   
-        mp = new MidiParser(songFile);
-      } 
-      catch(Exception e) {
-        System.out.println(e);
-      }
-      
-      resetSongMetaData();
-      setSongMetaData();
-    } else {
-      println(songFile.getPath() + " is invalid.");
-      println("Enter a '.mid' file.");
-    }
+    selectInput("Select a beatmap file", "bmSelectedNoImage");
   }
 
-  void bmSelected(File bmFile) {
-    if (bmFile == null) {
-      println("User hit cancel or esc");
-    } else if(bmFile.isDirectory()) {
-      println("\"" + bmFile + "\" is a directory.");
-    } else if(bmFile.getPath().endsWith(".bm")) {
-      println("You selected " + bmFile.getAbsolutePath());
-  
-      try {   
-        bm = new BeatMap();
-        bm.loadBeatMap(bmFile);
-        eventMap = bm.getEventQueues();
-      } 
-      catch(Exception e) {
-        System.out.println(e);
-        //e.printStackTrace();
-      }
-      
-    } else {
-      println(bmFile.getPath() + " is invalid.");
-      println("Enter a '.bm' file.");
-    }
-  }
-  
   //assumes that the metadata was not provided in the midi file
   //midi files do not require authors to include such information
   void resetSongMetaData() {
