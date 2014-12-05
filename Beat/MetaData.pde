@@ -17,6 +17,7 @@ class MetaData {
     
     if(midff.getProperty("author") != null)
       author = midff.getProperty("author").toString();
+      //author = (String) midff.getProperty("author");  //if top doesn't work
       
     if(midff.getProperty("title") != null)
       title = midff.getProperty("title").toString(); 
