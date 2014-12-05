@@ -2,7 +2,6 @@
   
 */
 import controlP5.*;
-import java.util.LinkedList;
 
 ControlP5 cp5;
 
@@ -15,6 +14,7 @@ int buttonw = 100;
 int lineh = 20;
 
 Map<Short,Queue<BeatMapEvent>> eventMap;  //used for play
+boolean newSong, newBM;
 
 MidiParser mp;
 BeatMap bm;
@@ -23,6 +23,7 @@ Authoring author;
 
 void setup() {
   size(800, 600);
+  newSong = false; newBM = false;
   
   cp5 = new ControlP5(this);
 
@@ -60,7 +61,7 @@ public void songBrowse() {
 void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
-    
+
     String fs = File.separator;
     String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
 
@@ -88,17 +89,48 @@ void songSelected(File songFile) {
 }
 
 void songSelectedNoParse(File songFile) {
-  if (songFile != null) {
+  if (songFile == null) {
+    println("User hit cancel or esc");
+  } else if(songFile.isDirectory()) {
+    println("\"" + songFile + "\" is a directory.");
+  } else if(songFile.getPath().endsWith(".mid")) {
     println("You selected " + songFile.getAbsolutePath());
     
     try {   
       mp = new MidiParser(songFile);
-      } 
+      newSong = true;
+    } 
     catch(Exception e) {
       System.out.println(e);
     }
   } else {
+    println(songFile.getPath() + " is invalid.");
+    println("Enter a '.mid' file.");
+  }
+}
+
+void bmSelectedNoImage(File bmFile) {
+  if (bmFile == null) {
     println("User hit cancel or esc");
+  } else if(bmFile.isDirectory()) {
+    println("\"" + bmFile + "\" is a directory.");
+  } else if(bmFile.getPath().endsWith(".bm")) {
+    println("You selected " + bmFile.getAbsolutePath());
+
+    try {   
+      bm = new BeatMap();
+      bm.loadBeatMap(bmFile);
+      eventMap = bm.getEventQueues();
+      newBM = true;
+    } 
+    catch(Exception e) {
+      System.out.println(e);
+      //e.printStackTrace();
+    }
+    
+  } else {
+    println(bmFile.getPath() + " is invalid.");
+    println("Enter a '.bm' file.");
   }
 }
 
