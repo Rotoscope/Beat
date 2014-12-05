@@ -14,6 +14,7 @@ import java.io.FileReader;
 public class BeatMap {
   private Queue<BeatMapEvent> events;
   private long duration;
+  private String filePath;
   
   float pixelsPerTick = 0.05;
   int imageWidth = 300;
@@ -54,6 +55,7 @@ public class BeatMap {
   
   public void loadBeatMap(File file) throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(file));
+    filePath = file.getPath();
     
     Map<Short, Long> currentEndTick = new HashMap<Short,Long>();
     
@@ -116,5 +118,9 @@ public class BeatMap {
   
   public short getLocationNumber() {
     return maxLocations;
+  }
+  
+  public String getFilePath() {
+    return filePath;
   }
 }
