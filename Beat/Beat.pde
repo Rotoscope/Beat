@@ -2,6 +2,7 @@
   
 */
 import controlP5.*;
+import java.util.LinkedList;
 
 ControlP5 cp5;
 
@@ -52,7 +53,7 @@ void draw() {
 
 // callback for song browsing
 public void songBrowse() {
-  selectInput("Select a midi file", "songSelected");
+  selectInput("Select a midi file", "songSelected", null, this);
 }
 
 // this needs to be here because of how selectInput works
@@ -60,8 +61,6 @@ void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
 
-    String fs = File.separator;
-    String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
     try {   
       mp = new MidiParser(songFile);
       mp.parseMidiFile();
@@ -88,7 +87,7 @@ void songSelected(File songFile) {
 void songSelectedNoParse(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
-
+    
     try {   
       mp = new MidiParser(songFile);
       } 
