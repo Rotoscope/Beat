@@ -91,6 +91,14 @@ public class MidiParser {
     sequencer.setTickPosition(0);
   }
   
+  public String getFilePath() {
+    return filepath;
+  }
+  
+  public MetaData getMetaData() {
+    return(metaData);
+  }
+  
   //altered code from http://stackoverflow.com/questions/3850688/reading-midi-files-in-java
   public void parseMidiFile() {
     int trackNumber = 0, channel;
