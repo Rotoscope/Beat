@@ -53,13 +53,16 @@ void draw() {
 
 // callback for song browsing
 public void songBrowse() {
-  selectInput("Select a midi file", "songSelected", null, this);
+  selectInput("Select a midi file", "songSelected");
 }
 
 // this needs to be here because of how selectInput works
 void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
+    
+    String fs = File.separator;
+    String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs;
 
     try {   
       mp = new MidiParser(songFile);
