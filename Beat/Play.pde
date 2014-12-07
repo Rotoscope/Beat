@@ -1,183 +1,170 @@
-public class Select extends BeatGUIBase {
-  private Textarea songArea, bmArea;
-  String author, date, copyright, title, comment;
-  String songText;
+public class Play extends BeatGUIBase {
+  final long MARGIN_OF_ERROR = 10;
+  int[] scores;
+  boolean[] flags;
+  Map<Short,Queue<BeatMapEvent>> release_events;
+  BeatMapEvent event;
 
-  public Select(ControlP5 cp5) {
-    super(cp5, cp5.addGroup("SELECT"));
+  public Play(ControlP5 cp5) {
+    super(cp5, cp5.addGroup("PLAY"));
   }
-  
+
   public void initialize() {
-    cp5.addBang("songBrowseNoParse")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(25, 20)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("Load your song")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-
-    cp5.addBang("bmBrowse")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(25, 280)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("Load your beatmap")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-                    
-    songArea = cp5.addTextarea("songdata")
-                 .setGroup(group)
-                   .setPosition(25, 50)
-                     .setSize(width - 50, 200)
-                       .setFont(createFont("arial", 12))
-                         .setLineHeight(14)
-                           .setColor(#000000)
-                             .setColorBackground(color(#ABD7E5))
-                               .setColorForeground(color(#6BEAD3))
-                                 .setText("Choose a midi file")
-                                   ;
+    flags = new boolean[4];
+    for(short i = 0; i < 4; i++)
+      flags[i] = false;
+    scores = new int[5];
     
-    bmArea = cp5.addTextarea("bmdata")
-               .setGroup(group)
-                 .setPosition(25, 310)
-                   .setSize(width - 50, 200)
-                     .setFont(createFont("arial", 12))
-                       .setLineHeight(14)
-                         .setColor(#000000)
-                           .setColorBackground(color(#ABD7E5))
-                             .setColorForeground(color(#6BEAD3))
-                               .setText("Choose a bm file")
-                                 ;
-    
-    cp5.addBang("play")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/4 - buttonw/2, height - 50)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("PLAY")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-/*                  
-    cp5.addBang("option")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2 - buttonw/2, height - 50)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("OPTION")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-*/    
-    cp5.addBang("menu")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width*3/4 - buttonw/2, height - 50)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("RETURN TO MENU")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-    
-    resetSongMetaData();
+    release_events = new HashMap<Short,Queue<BeatMapEvent>>();
   }
-  
+
   public void draw() {
-    background(backgroundColor);
-  
-    if(mp != null) {
-      if(newSong) {   
-        resetSongMetaData();
-        setSongMetaData();
-        newSong = false;
+    if(offset < 0) offset++;
+    if(justStarted && offset >= 0) {
+      try {
+        if(mp != null) mp.playSong();
+      } catch(Exception e) {
+        println(e);
       }
-      songText = mp.getFilePath() + "\n\n" + title + "\n\n" + author + "\n\n" + copyright + "\n\n" + date + "\n\n" + comment;
-      songArea.setText(songText);
+      justStarted = false;
     }
-    if(bm != null) {
-      if(newBM) {
-        newBM = false;
-      }
-      bmArea.setText(bm.getFilePath());
-    }
-  }
-  
-  public void keyPressed() {
-  }
-  
-  public void keyReleased() {
     
-  }
-  
-  public void songBrowseNoParse() {
-    selectInput("Select a midi file", "songSelectedNoParse");
-  }
-  
-  public void bmBrowse() {
-    selectInput("Select a beatmap file", "bmSelected");
+    checkMissTiming();
+    
+    if (img!=null) {
+      //    if (offset < 0)
+      //      offset = 0;
+      //    else if (offset > (img.height - height))
+      //      offset = img.height - height;
+      //      
+      if (mp != null && offset >= 0) {
+        offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
+      }
+
+      image(img, width/2 - img.width/2, height - img.height+offset - lineh);
+
+      // draw timing line
+      stroke(#98F79E);
+      strokeWeight(4);
+      line(width/2 - img.width/2, height-lineh, width/2 + img.width/2, height-lineh);
+    }
   }
 
-  //assumes that the metadata was not provided in the midi file
-  //midi files do not require authors to include such information
-  void resetSongMetaData() {
-    author = "Unknown author";
-    date = "Unknown creation date";
-    copyright = "Unknown copyright information";
-    title = "Unknown title song";
-    comment = "No comments";
-  }
-  
-  void setSongMetaData() {
-    if(mp.getMetaData().getAuthor() != null)
-      author = mp.getMetaData().getAuthor();
-    if(mp.getMetaData().getDate() != null)
-      date = mp.getMetaData().getDate();
-    if(mp.getMetaData().getCopyright() != null)
-      copyright = mp.getMetaData().getCopyright();
-    if(mp.getMetaData().getTitle() != null)
-      title = mp.getMetaData().getTitle();
-    if(mp.getMetaData().getComment() != null)
-      comment = mp.getMetaData().getComment();
-  }
-  
-  public void play() {
-    if(mp == null) {
-      println("Select a song");
-    } else if(bm == null) {
-      println("Select a beatmap");
-    } else {
-      currentGUI.hide();
-      currentGUI = play;
-      currentGUI.show();
-      offset = -800;
-      justStarted = true;
+  public void keyPressed() {
+    if (mp != null && bm != null && eventMap != null) {
+      switch(key) {
+        case 'D':
+          if (flags[0] == false) {
+            checkPressAccuracy((short) 1);
+          }
+          flags[0] = true;
+          break;
+        case 'F':
+          if (flags[1] == false) {
+            checkPressAccuracy((short) 2);
+          }
+          flags[1] = true;
+          break;
+        case 'J':
+          if (flags[2] == false) {
+            checkPressAccuracy((short) 3);
+          }
+          flags[2] = true;
+          break;
+        case 'K':
+          if (flags[3] == false) {
+            checkPressAccuracy((short) 4);
+          }
+          flags[3] = true;
+          break;
+      }
     }
   }
-/*  
-  public void option() {
-    currentGUI.hide();
-    currentGUI = option;
-    currentGUI.show();
+
+  public void keyReleased() {
+    if (mp != null && bm != null && release_events != null) {
+      switch(key) {
+        case 'D':
+          flags[0] = false;
+          checkReleaseAccuracy((short) 1);
+          break;
+        case 'F':
+          flags[1] = false;
+          checkReleaseAccuracy((short) 2);
+          break;
+        case 'J':
+          flags[2] = false;
+          checkReleaseAccuracy((short) 3);
+          break;
+        case 'K':
+          flags[3] = false;
+          checkReleaseAccuracy((short) 4);
+          break;
+      }
+    }
   }
-*/  
-  public void menu() {
-    currentGUI.hide();
-    currentGUI = menu;
-    currentGUI.show();
+
+  public void checkPressAccuracy(short i) {
+    if(eventMap != null && eventMap.get(i) != null) {
+      long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(i).peek().getTick());
+      //only consider the score if the button pushed is near a note
+      if (accuracy < MARGIN_OF_ERROR * 5) {
+        if (accuracy <= MARGIN_OF_ERROR) {
+          scores[0]++;
+        } else if(accuracy <= MARGIN_OF_ERROR * 2) {
+          scores[1]++;
+        } else if(accuracy <= MARGIN_OF_ERROR * 3) {
+          scores[2]++;
+        } else if(accuracy <= MARGIN_OF_ERROR * 4) {
+          scores[3]++;
+        } else scores[4]++;
+        
+        event = eventMap.get(i).poll();
+        event.setTick(event.getEndTick());
+        event.addToQueue(release_events);
+      }
+    }
+  }
+
+  public void checkReleaseAccuracy(short i) {
+    if(release_events != null && release_events.get(i) != null) {
+      long accuracy = Math.abs(mp.getTickPosition() - release_events.get(i).poll().getTick());
+  
+      if (accuracy <= MARGIN_OF_ERROR) {
+        scores[0]++;
+      } else if(accuracy <= MARGIN_OF_ERROR * 2) {
+        scores[1]++;
+      } else if(accuracy <= MARGIN_OF_ERROR * 3) {
+        scores[2]++;
+      } else if(accuracy <= MARGIN_OF_ERROR * 4) {
+        scores[3]++;
+      } else scores[4]++;
+    }
   }
   
-/*  //if want to shorten the displayed path
-  String pathDivision(String s) {
-    String path;
-    int i = s.indexOf("Data");
-    if(i != -1)
-      path = "." + File.separator + s.substring(i);
-    else
-      path = s;
-    return(path);
+  void checkMissTiming() {
+    for(short i = 1; i <= 4; i++) {
+      if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
+        long acc = mp.getTickPosition() - eventMap.get(i).peek().getTick();
+
+        if(acc > MARGIN_OF_ERROR * 4) {
+          eventMap.get(i).poll();
+          scores[4]++;
+        }
+      }
+      
+      if(release_events != null && release_events.get(i) != null && release_events.get(i).peek() != null) {
+        long acc = mp.getTickPosition() - release_events.get(i).peek().getTick();
+        
+        if(acc > MARGIN_OF_ERROR * 4) {
+          release_events.get(i).poll();
+          scores[4]++;
+        }
+      }
+    }
   }
-*/
+  
+  int calculateScore() {
+    return scores[0]*200 + scores[1]*150 + scores[2]*100 + scores[3]*50;
+  }
 }
