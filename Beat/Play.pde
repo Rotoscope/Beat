@@ -19,21 +19,24 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-    for(short i = 0; i < 4; i++) {
-      if(eventMap.get(i) != null) {
-        long acc = eventMap.get(i).peek().getTick() - mp.getTickPosition();
-        if(acc >= MARGIN_OF_ERROR * 5) {
-          eventMap.get(i).poll();
-          scores[4]++;
-        }
+    //checkTiming();
+    
+    if (img!=null) {
+      //    if (offset < 0)
+      //      offset = 0;
+      //    else if (offset > (img.height - height))
+      //      offset = img.height - height;
+      //      
+      if (mp != null) {
+        offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
       }
-      if(release_events.get(i) != null) {
-        long acc = release_events.get(i).peek().getTick() - mp.getTickPosition();
-        if(acc >= MARGIN_OF_ERROR * 5) {
-          release_events.get(i).poll();
-          scores[4]++;
-        }
-      }
+
+      image(img, width/2 - img.width/2, height - img.height+offset - lineh);
+
+      // draw timing line
+      stroke(#98F79E);
+      strokeWeight(4);
+      line(width/2 - img.width/2, height-lineh, img.width, height-lineh);
     }
   }
 
@@ -92,7 +95,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void checkPressAccuracy(int i) {
-    if(eventMap.get(i) != null) {
+    if(eventMap != null && eventMap.get(i) != null) {
       long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(i).peek().getTick());
       //only consider the score if the button pushed is near a note
       if (accuracy < MARGIN_OF_ERROR * 5) {
@@ -109,11 +112,30 @@ public class Play extends BeatGUIBase {
   }
 
   public void checkReleaseAccuracy(int i) {
-    if(release_events.get(i) != null) {
+    if(release_events != null && release_events.get(i) != null) {
       long accuracy = Math.abs(mp.getTickPosition() - release_events.get(3).poll().getTick());
   
       if (accuracy <= MARGIN_OF_ERROR) {
         scores[0]++;
+      }
+    }
+  }
+  
+  void checkTiming() {
+    for(short i = 0; i < 4; i++) {
+      if(eventMap != null && eventMap.get(i) != null) {
+        long acc = eventMap.get(i).peek().getTick() - mp.getTickPosition();
+        if(acc >= MARGIN_OF_ERROR * 5) {
+          eventMap.get(i).poll();
+          scores[4]++;
+        }
+      }
+      if(release_events != null && release_events.get(i) != null) {
+        long acc = release_events.get(i).peek().getTick() - mp.getTickPosition();
+        if(acc >= MARGIN_OF_ERROR * 5) {
+          release_events.get(i).poll();
+          scores[4]++;
+        }
       }
     }
   }
