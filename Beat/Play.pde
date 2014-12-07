@@ -1,3 +1,10 @@
+/*
+* Play mode:
+* 1. Check how accurate every press and release is
+* 2. Check if any press or release timings are missed and toss them out
+* 3. 
+*/
+
 public class Play extends BeatGUIBase {
   final long MARGIN_OF_ERROR = 10;
   int[] scores;
