@@ -12,6 +12,7 @@ int offset = 0;
 int speed = 5;
 int buttonw = 100;
 int lineh = 20;
+boolean justStarted = false;
 
 Map<Short,Queue<BeatMapEvent>> eventMap;  //used for play
 boolean newSong, newBM;
