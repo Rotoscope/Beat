@@ -1,3 +1,10 @@
+/*
+* Play mode:
+* 1. Check how accurate every press and release is
+* 2. Check if any press or release timings are missed and toss them out
+* 3. 
+*/
+
 public class Play extends BeatGUIBase {
   final long MARGIN_OF_ERROR = 10;
   int[] scores;
@@ -19,7 +26,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-//    checkTiming();
+//    checkMissTiming();
     
     if (img!=null) {
       //    if (offset < 0)
@@ -107,7 +114,7 @@ public class Play extends BeatGUIBase {
           scores[2]++;
         } else if(accuracy <= MARGIN_OF_ERROR * 4) {
           scores[3]++;
-        }
+        } else scores[4]++;
         
         event = eventMap.get(i).poll();
         event.setTick(event.getEndTick());
@@ -128,14 +135,14 @@ public class Play extends BeatGUIBase {
         scores[2]++;
       } else if(accuracy <= MARGIN_OF_ERROR * 4) {
         scores[3]++;
-      }
+      } else scores[4]++;
     }
   }
   
-  void checkTiming() {
+  void checkMissTiming() {
     for(short i = 1; i <= 4; i++) {
-      if(eventMap != null && eventMap.get(i) != null) {
-        long acc = Math.abs(eventMap.get(i).peek().getTick() - mp.getTickPosition());
+      if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
+        long acc = mp.getTickPosition() - eventMap.get(i).peek().getTick();
         
         if(acc > MARGIN_OF_ERROR * 4) {
           eventMap.get(i).poll();
@@ -143,8 +150,8 @@ public class Play extends BeatGUIBase {
         }
       }
       
-      if(release_events != null && release_events.get(i) != null) {
-        long acc = Math.abs(release_events.get(i).peek().getTick() - mp.getTickPosition());
+      if(release_events != null && release_events.get(i) != null && release_events.get(i).peek() != null) {
+        long acc = mp.getTickPosition() - release_events.get(i).peek().getTick();
         
         if(acc > MARGIN_OF_ERROR * 4) {
           release_events.get(i).poll();
