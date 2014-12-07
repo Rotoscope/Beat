@@ -19,8 +19,11 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-    if(offset < 0) offset++;
-    if(justStarted && offset >= 0) {
+    if(offset < 0) {
+      fill(#000000);
+      rect(width/2 - img.width/2, 0, img.width, height);
+      offset++;
+    } else if(justStarted && offset >= 0) {
       try {
         if(mp != null) mp.playSong();
       } catch(Exception e) {
