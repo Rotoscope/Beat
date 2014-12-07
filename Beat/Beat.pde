@@ -18,8 +18,9 @@ boolean newSong, newBM;
 
 MidiParser mp;
 BeatMap bm;
-BeatGUIBase currentGUI, menu, play, select, customize;
+BeatGUIBase currentGUI, menu, play, customize;
 Authoring author;
+Select select;
 
 void setup() {
   size(800, 600, P3D);
@@ -70,6 +71,12 @@ void songSelected(File songFile) {
           author.images.add(bm.makeImage());
         }
       }
+      
+      select.resetSongMetaData();
+      select.setSongMetaData();
+      
+      String songText = songText = mp.getFilePath() + "\n\n" + select.title + "\n\n" + select.author + "\n\n" + select.copyright + "\n\n" + select.date + "\n\n" + select.comment;
+      author.songArea.setText(songText);
     } 
     catch(Exception e) {
       System.out.println(e);
