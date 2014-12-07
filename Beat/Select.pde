@@ -152,6 +152,8 @@ public class Select extends BeatGUIBase {
       currentGUI.hide();
       currentGUI = play;
       currentGUI.show();
+      offset = -800;
+      justStarted = true;
     }
   }
 /*  
