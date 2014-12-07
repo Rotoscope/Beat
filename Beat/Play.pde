@@ -20,6 +20,7 @@ public class Play extends BeatGUIBase {
 
   public void draw() {
     if(offset < 0) {
+      noStroke();
       fill(#000000);
       rect(width/2 - img.width/2, 0, img.width, height);
       offset++;
