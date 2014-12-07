@@ -135,7 +135,7 @@ public class Play extends BeatGUIBase {
   void checkTiming() {
     for(short i = 1; i <= 4; i++) {
       if(eventMap != null && eventMap.get(i) != null) {
-        long acc = eventMap.get(i).peek().getTick() - mp.getTickPosition();
+        long acc = Math.abs(eventMap.get(i).peek().getTick() - mp.getTickPosition());
         
         if(acc > MARGIN_OF_ERROR * 4) {
           eventMap.get(i).poll();
@@ -144,7 +144,7 @@ public class Play extends BeatGUIBase {
       }
       
       if(release_events != null && release_events.get(i) != null) {
-        long acc = release_events.get(i).peek().getTick() - mp.getTickPosition();
+        long acc = Math.abs(release_events.get(i).peek().getTick() - mp.getTickPosition());
         
         if(acc > MARGIN_OF_ERROR * 4) {
           release_events.get(i).poll();
