@@ -19,7 +19,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-    checkTiming();
+//    checkTiming();
     
     if (img!=null) {
       //    if (offset < 0)
