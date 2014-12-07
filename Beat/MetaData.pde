@@ -54,6 +54,7 @@ class MetaData {
   
   //will parse the date and return in XX/XX/XXXX format or XX/XX/XX
   public String getDate() {
-    return date.toString();
+    if(date == null) return "Unknown date";
+    else return date.toString();
   }
 }

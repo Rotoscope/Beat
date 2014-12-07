@@ -100,7 +100,7 @@ void songSelectedNoParse(File songFile) {
   }
 }
 
-void bmSelectedNoImage(File bmFile) {
+void bmSelected(File bmFile) {
   if (bmFile == null) {
     println("User hit cancel or esc");
   } else if(bmFile.isDirectory()) {
@@ -111,6 +111,8 @@ void bmSelectedNoImage(File bmFile) {
     try {   
       bm = new BeatMap();
       bm.loadBeatMap(bmFile);
+      img = bm.makeImage();
+      offset = 0;
       eventMap = bm.getEventQueues();
       newBM = true;
     } 
@@ -122,26 +124,6 @@ void bmSelectedNoImage(File bmFile) {
   } else {
     println(bmFile.getPath() + " is invalid.");
     println("Enter a '.bm' file.");
-  }
-}
-
-void bmSelected(File bmFile) {
-  if (bmFile != null) {
-    println("You selected" + bmFile.getAbsolutePath());
-
-    try {   
-      bm = new BeatMap();
-      bm.loadBeatMap(bmFile);
-      img = bm.makeImage();
-      offset = 0;
-      eventMap = bm.getEventQueues();
-    } 
-    catch(Exception e) {
-      System.out.println(e);
-      //e.printStackTrace();
-    }
-  } else {
-    println("User hit cancel or esc");
   }
 }
 

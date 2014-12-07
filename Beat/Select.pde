@@ -117,7 +117,7 @@ public class Select extends BeatGUIBase {
   }
   
   public void bmBrowse() {
-    selectInput("Select a beatmap file", "bmSelectedNoImage");
+    selectInput("Select a beatmap file", "bmSelected");
   }
 
   //assumes that the metadata was not provided in the midi file
