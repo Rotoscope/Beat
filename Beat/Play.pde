@@ -26,7 +26,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-//    checkTiming();
+//    checkMissTiming();
     
     if (img!=null) {
       //    if (offset < 0)
@@ -139,7 +139,7 @@ public class Play extends BeatGUIBase {
     }
   }
   
-  void checkTiming() {
+  void checkMissTiming() {
     for(short i = 1; i <= 4; i++) {
       if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
         long acc = mp.getTickPosition() - eventMap.get(i).peek().getTick();
