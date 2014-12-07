@@ -22,39 +22,30 @@ BeatGUIBase currentGUI, menu, play, select, customize;
 Authoring author;
 
 void setup() {
-  size(800, 600);
+  size(800, 600, P3D);
   newSong = false; newBM = false;
   
   cp5 = new ControlP5(this);
 
-  Group gMenu = cp5.addGroup("MENU");
-  menu = new MainMenu(cp5, gMenu);
+  menu = new MainMenu(cp5);
   menu.initialize();
   currentGUI = menu;
   
-  Group gSelect = cp5.addGroup("SELECT");
-  select = new Select(cp5, gSelect);
+  select = new Select(cp5);
   select.initialize();
-  gSelect.hide();
+  select.hide();
   
-  Group gPlay = cp5.addGroup("PLAY");
-  play = new Play(cp5, gPlay);
+  play = new Play(cp5);
   play.initialize();
-  gPlay.hide();
+  play.hide();
   
-  Group gAuthor = cp5.addGroup("AUTHOR");
-  author = new Authoring(cp5, gAuthor);
+  author = new Authoring(cp5);
   author.initialize();
-  gAuthor.hide();
+  author.hide();
 }
 
 void draw() {
   currentGUI.draw();
-}
-
-// callback for song browsing
-public void songBrowse() {
-  selectInput("Select a midi file", "songSelected");
 }
 
 // this needs to be here because of how selectInput works

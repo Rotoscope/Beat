@@ -3,8 +3,8 @@ public class Select extends BeatGUIBase {
   String author, date, copyright, title, comment;
   String songText;
 
-  public Select(ControlP5 cp5, Group group) {
-    super(cp5, group);
+  public Select(ControlP5 cp5) {
+    super(cp5, cp5.addGroup("SELECT"));
   }
   
   public void initialize() {

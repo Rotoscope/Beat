@@ -5,8 +5,8 @@ public class Play extends BeatGUIBase {
   Map<Short,Queue<BeatMapEvent>> release_events;
   BeatMapEvent event;
 
-  public Play(ControlP5 cp5, Group group) {
-    super(cp5, group);
+  public Play(ControlP5 cp5) {
+    super(cp5, cp5.addGroup("PLAY"));
   }
 
   public void initialize() {

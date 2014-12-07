@@ -1,7 +1,10 @@
 public class MainMenu extends BeatGUIBase {
 
-  public MainMenu(ControlP5 cp5, Group group) {
-    super(cp5, group);
+  boolean in3d = false;
+  float rotAngle = PI/3.0;
+  
+  public MainMenu(ControlP5 cp5) {
+    super(cp5, cp5.addGroup("MENU"));
   }
 
   public void initialize() {
@@ -23,7 +26,7 @@ public class MainMenu extends BeatGUIBase {
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
 
-    cp5.addBang("bmBrowse")
+    cp5.addBang("bmBrowseMM")
       .plugTo(this)
         .setGroup(group)
           .setPosition(width/2-buttonw/2, 110)
@@ -33,7 +36,7 @@ public class MainMenu extends BeatGUIBase {
                   .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                     ;
 
-    cp5.addBang("songBrowseNoParse")
+    cp5.addBang("songBrowseNoParseMM")
       .plugTo(this)
         .setGroup(group)
           .setPosition(width/2-buttonw/2, 20)
@@ -49,6 +52,24 @@ public class MainMenu extends BeatGUIBase {
           .setPosition(width/2-buttonw/2, 140)
             .setSize(buttonw, 20)
               .setLabel("Authoring Mode")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+              
+     cp5.addBang("playing")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(width/2-buttonw/2, 170)
+            .setSize(buttonw, 20)
+              .setLabel("Play Mode")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+                  
+     cp5.addBang("toggle3d")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(width/2-buttonw/2, 200)
+            .setSize(buttonw, 20)
+              .setLabel("3d ON/OFF")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
   }
@@ -72,22 +93,29 @@ public class MainMenu extends BeatGUIBase {
         offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
       }
 
-      image(img, 0, height - img.height+offset - lineh);
+      pushMatrix();
+      translate(0, height, 0);
+      
+      if(in3d)
+        rotateX(rotAngle);
+        
+      image(img, 0, -img.height+offset - lineh);
 
       // draw timing line
       stroke(#98F79E);
       strokeWeight(4);
-      line(0, height-lineh, img.width, height-lineh);
+      line(0, -lineh, img.width, -lineh);
+      popMatrix();
     }
   }
 
 
-  public void songBrowseNoParse() {
+  public void songBrowseNoParseMM() {
     selectInput("Select a midi file", "songSelectedNoParse");
   }
 
   // callback for beatmap browsing
-  public void bmBrowse() {
+  public void bmBrowseMM() {
     selectInput("Select a beatmap file", "bmSelected");
   }
 
@@ -111,6 +139,16 @@ public class MainMenu extends BeatGUIBase {
     currentGUI.hide();
     currentGUI = author;
     currentGUI.show();
+  }
+  
+  public void playing() {
+    currentGUI.hide();
+    currentGUI = select;
+    currentGUI.show();
+  }
+  
+  public void toggle3d() {
+    in3d = !in3d;
   }
 
   public void keyPressed() {
