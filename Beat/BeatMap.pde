@@ -24,6 +24,11 @@ public class BeatMap {
                            #EA1111,#11EA74,#1711EA,#E6EA11,
                            #EA1111,#11EA74,#1711EA,#E6EA11};
   
+  // rotation angles for 3d image                         
+  float xAngle = PI/3.0;
+  float yAngle = 0;//PI/3.0;
+  float zAngle = -PI/8.0;
+  
   public BeatMap() {
     events = new PriorityQueue<BeatMapEvent>(50, new EventComparator());
     duration = 0;

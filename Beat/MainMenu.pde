@@ -1,7 +1,6 @@
 public class MainMenu extends BeatGUIBase {
 
   boolean in3d = false;
-  float rotAngle = PI/3.0;
   
   public MainMenu(ControlP5 cp5) {
     super(cp5, cp5.addGroup("MENU"));
@@ -94,17 +93,20 @@ public class MainMenu extends BeatGUIBase {
       }
 
       pushMatrix();
-      translate(0, height, 0);
+      translate(img.width/2, height, 0);
       
-      if(in3d)
-        rotateX(rotAngle);
+      if(in3d) {
+        rotateX(bm.xAngle);
+        rotateY(bm.yAngle);
+        rotateZ(bm.zAngle);
+      }
         
-      image(img, 0, -img.height+offset - lineh);
+      image(img, -img.width/2, -img.height+offset - lineh);
 
       // draw timing line
       stroke(#98F79E);
       strokeWeight(4);
-      line(0, -lineh, img.width, -lineh);
+      line(-img.width/2, -lineh, img.width/2, -lineh);
       popMatrix();
     }
   }
