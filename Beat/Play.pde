@@ -109,7 +109,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void checkPressAccuracy(short i) {
-    if(eventMap != null && eventMap.get(i) != null) {
+    if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
       long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(i).peek().getTick());
       //only consider the score if the button pushed is near a note
       if (accuracy <= MARGIN_OF_ERROR * 4) {
@@ -135,7 +135,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void checkReleaseAccuracy(short i) {
-    if(release_events != null && release_events.get(i) != null) {
+    if(release_events != null && release_events.get(i) != null && release_events.get(i).peek() != null) {
       long accuracy = Math.abs(mp.getTickPosition() - release_events.get(i).poll().getTick());
   
       if (accuracy <= MARGIN_OF_ERROR) {
