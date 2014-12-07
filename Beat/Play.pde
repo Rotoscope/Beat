@@ -19,7 +19,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-    //checkTiming();
+    checkTiming();
     
     if (img!=null) {
       //    if (offset < 0)
@@ -36,7 +36,7 @@ public class Play extends BeatGUIBase {
       // draw timing line
       stroke(#98F79E);
       strokeWeight(4);
-      line(width/2 - img.width/2, height-lineh, img.width, height-lineh);
+      line(width/2 - img.width/2, height-lineh, width/2 + img.width/2, height-lineh);
     }
   }
 
@@ -45,25 +45,25 @@ public class Play extends BeatGUIBase {
       switch(key) {
         case 'D':
           if (flags[0] == false) {
-            checkPressAccuracy(0);
+            checkPressAccuracy((short) 1);
           }
           flags[0] = true;
           break;
         case 'F':
           if (flags[1] == false) {
-            checkPressAccuracy(1);
+            checkPressAccuracy((short) 2);
           }
           flags[1] = true;
           break;
         case 'J':
           if (flags[2] == false) {
-            checkPressAccuracy(2);
+            checkPressAccuracy((short) 3);
           }
           flags[2] = true;
           break;
         case 'K':
           if (flags[3] == false) {
-            checkPressAccuracy(3);
+            checkPressAccuracy((short) 4);
           }
           flags[3] = true;
           break;
@@ -76,33 +76,38 @@ public class Play extends BeatGUIBase {
       switch(key) {
         case 'D':
           flags[0] = false;
-          checkReleaseAccuracy(0);
+          checkReleaseAccuracy((short) 1);
           break;
         case 'F':
           flags[1] = false;
-          checkReleaseAccuracy(1);
+          checkReleaseAccuracy((short) 2);
           break;
         case 'J':
           flags[2] = false;
-          checkReleaseAccuracy(2);
+          checkReleaseAccuracy((short) 3);
           break;
         case 'K':
           flags[3] = false;
-          checkReleaseAccuracy(3);
+          checkReleaseAccuracy((short) 4);
           break;
       }
     }
   }
 
-  public void checkPressAccuracy(int i) {
+  public void checkPressAccuracy(short i) {
     if(eventMap != null && eventMap.get(i) != null) {
       long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(i).peek().getTick());
       //only consider the score if the button pushed is near a note
       if (accuracy < MARGIN_OF_ERROR * 5) {
         if (accuracy <= MARGIN_OF_ERROR) {
           scores[0]++;
+        } else if(accuracy <= MARGIN_OF_ERROR * 2) {
+          scores[1]++;
+        } else if(accuracy <= MARGIN_OF_ERROR * 3) {
+          scores[2]++;
+        } else if(accuracy <= MARGIN_OF_ERROR * 4) {
+          scores[3]++;
         }
-        
         
         event = eventMap.get(i).poll();
         event.setTick(event.getEndTick());
@@ -111,28 +116,37 @@ public class Play extends BeatGUIBase {
     }
   }
 
-  public void checkReleaseAccuracy(int i) {
+  public void checkReleaseAccuracy(short i) {
     if(release_events != null && release_events.get(i) != null) {
-      long accuracy = Math.abs(mp.getTickPosition() - release_events.get(3).poll().getTick());
+      long accuracy = Math.abs(mp.getTickPosition() - release_events.get(i).poll().getTick());
   
       if (accuracy <= MARGIN_OF_ERROR) {
         scores[0]++;
+      } else if(accuracy <= MARGIN_OF_ERROR * 2) {
+        scores[1]++;
+      } else if(accuracy <= MARGIN_OF_ERROR * 3) {
+        scores[2]++;
+      } else if(accuracy <= MARGIN_OF_ERROR * 4) {
+        scores[3]++;
       }
     }
   }
   
   void checkTiming() {
-    for(short i = 0; i < 4; i++) {
+    for(short i = 1; i <= 4; i++) {
       if(eventMap != null && eventMap.get(i) != null) {
         long acc = eventMap.get(i).peek().getTick() - mp.getTickPosition();
-        if(acc >= MARGIN_OF_ERROR * 5) {
+        
+        if(acc > MARGIN_OF_ERROR * 4) {
           eventMap.get(i).poll();
           scores[4]++;
         }
       }
+      
       if(release_events != null && release_events.get(i) != null) {
         long acc = release_events.get(i).peek().getTick() - mp.getTickPosition();
-        if(acc >= MARGIN_OF_ERROR * 5) {
+        
+        if(acc > MARGIN_OF_ERROR * 4) {
           release_events.get(i).poll();
           scores[4]++;
         }
