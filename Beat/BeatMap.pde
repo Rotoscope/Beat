@@ -67,7 +67,6 @@ public class BeatMap {
     
     String line = null;
     String delims = "[ ]+";
-    line = reader.readLine();
     
     while((line = reader.readLine()) != null) {
       String[] tokens = line.split(delims);
