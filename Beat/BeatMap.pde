@@ -24,6 +24,7 @@ public class BeatMap {
                            #EA1111,#11EA74,#1711EA,#E6EA11,
                            #EA1111,#11EA74,#1711EA,#E6EA11};
   
+  boolean in3d = false;
   // rotation angles for 3d image                         
   float xAngle = PI/3.0;
   float yAngle = 0;//PI/3.0;
@@ -92,6 +93,10 @@ public class BeatMap {
         max = next;
     }
     duration = max;
+  }
+  
+  public void copyCustomize(BeatMap target) {
+    
   }
   
   public Queue<BeatMapEvent> getMap() {

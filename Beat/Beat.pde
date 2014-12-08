@@ -16,6 +16,7 @@ boolean justStarted = false;
 
 Map<Short,Queue<BeatMapEvent>> eventMap;  //used for play
 boolean newSong, newBM;
+boolean tryMode = false;
 
 MidiParser mp;
 BeatMap bm;
@@ -78,6 +79,7 @@ void songSelected(File songFile) {
       
       String songText = songText = mp.getFilePath() + "\n\n" + select.title + "\n\n" + select.author + "\n\n" + select.copyright + "\n\n" + select.date + "\n\n" + select.comment;
       author.songArea.setText(songText);
+      author.groupS.show();
     } 
     catch(Exception e) {
       System.out.println(e);

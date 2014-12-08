@@ -69,4 +69,8 @@ public class PressTiming extends BeatMapEvent {
              + "\n\tduration: " + duration;
     return s;
   }
+  
+  public String toFileString() {
+    return location + " " + tick + " " + getEndTick();
+  }
 }

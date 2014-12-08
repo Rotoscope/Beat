@@ -3,6 +3,8 @@ public class Authoring extends BeatGUIBase {
   List<PImage> images;
   List<BeatMap> beatmaps; 
 
+  String filename;
+
   int currentIndex = 0;
   int selectedIndex = 0;
 
@@ -12,6 +14,7 @@ public class Authoring extends BeatGUIBase {
   int displayNumber = 2;
 
   Textarea songArea;
+  Group groupS;
 
   public Authoring(ControlP5 cp5) {
     super(cp5, cp5.addGroup("AUTHOR"));
@@ -39,10 +42,49 @@ public class Authoring extends BeatGUIBase {
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
 
+    groupS = cp5.addGroup("groupS");
+    groupS.hide();
+
+    cp5.addButton("toTry")
+      .plugTo(this)
+        .setGroup(groupS)
+          .setPosition(width/2-buttonw/2, 50)
+            .setSize(buttonw, 20)
+              .setLabel("Try it out")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+
+    cp5.addButton("toCustomize")
+      .plugTo(this)
+        .setGroup(groupS)
+          .setPosition(width/2-buttonw/2, 80)
+            .setSize(buttonw, 20)
+              .setLabel("Customize")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+
+    cp5.addButton("saveSelected")
+      .plugTo(this)
+        .setGroup(groupS)
+          .setPosition(width/2-buttonw/2, 165)
+            .setSize(buttonw, 20)
+              .setLabel("Save Selected")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+
+    cp5.addTextfield("bmName")
+      .setGroup(groupS)
+        .setPosition(width/2 - 100, 110)
+          .setSize(200, 40)
+            .setLabel("Enter a beatmap name")
+              .setFont(createFont("arial", 20))
+                .setAutoClear(false)
+                  ;
+
     songArea = cp5.addTextarea("songdataA")
       .setGroup(group)
         .setPosition(25, 50)
-          .setSize(width/2 - 50, height - 100)
+          .setSize(width/2 - 130, height - 100)
             .setFont(createFont("arial", 12))
               .setLineHeight(14)
                 .setColor(#000000)
@@ -115,8 +157,65 @@ public class Authoring extends BeatGUIBase {
 
   public void toMain() {
     currentGUI.hide();
+    groupS.hide();
     currentGUI = menu;
     currentGUI.show();
+  }
+
+  public void toTry() {
+    currentGUI.hide();
+    groupS.hide();
+
+    bm = beatmaps.get(selectedIndex + currentIndex);
+
+    newSong = true;
+    img = bm.makeImage();
+    offset = 0;
+    eventMap = bm.getEventQueues();
+    newBM = true;
+    tryMode = true;
+
+    currentGUI = play;
+    currentGUI.show();
+  }
+
+  public void toCustomize() {
+    currentGUI.hide();
+    groupS.hide();
+    Customize cust = new Customize(cp5, beatmaps.get(selectedIndex + currentIndex));
+    cust.initialize();
+    currentGUI = cust;
+    currentGUI.show();
+  }
+
+  public void saveSelected() {
+    try {
+      PrintWriter pw;
+      BeatMapEvent event;
+      BeatMap bm = beatmaps.get(selectedIndex + currentIndex);
+
+      pw = new PrintWriter(filename);
+
+      //adds the notes to the file
+      while (bm.getMap ().peek() != null) {
+        event = bm.getMap().poll();
+        pw.println(event.toFileString());
+      }    
+
+      pw.close();
+    } 
+    catch (Exception e) {
+      println(e.getMessage());
+    }
+  }
+
+  public void applyToAllBM() {
+    BeatMap changedBM = beatmaps.get(selectedIndex + currentIndex);
+
+    for (int i = 0; i < beatmaps.size (); i++) {
+      if (i != selectedIndex + currentIndex)
+        changedBM.copyCustomize(beatmaps.get(i));
+    }
   }
 }
 

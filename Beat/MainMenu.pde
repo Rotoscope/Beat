@@ -62,15 +62,6 @@ public class MainMenu extends BeatGUIBase {
               .setLabel("Play Mode")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
-                  
-     cp5.addBang("toggle3d")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2-buttonw/2, 200)
-            .setSize(buttonw, 20)
-              .setLabel("3d ON/OFF")
-                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;
   }
 
   public void draw() {
@@ -147,10 +138,6 @@ public class MainMenu extends BeatGUIBase {
     currentGUI.hide();
     currentGUI = select;
     currentGUI.show();
-  }
-  
-  public void toggle3d() {
-    in3d = !in3d;
   }
 
   public void keyPressed() {
