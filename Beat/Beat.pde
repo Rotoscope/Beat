@@ -2,6 +2,7 @@
   
 */
 import controlP5.*;
+import java.util.Set;
 
 ControlP5 cp5;
 
@@ -15,17 +16,17 @@ int lineh = 20;
 boolean justStarted = false;
 
 Map<Short,Queue<BeatMapEvent>> eventMap;  //used for play
+Map<Integer,Short> hotkeys;
 boolean newSong, newBM;
-boolean tryMode = false;
+final String hotkeyPath = "Data" + File.separator + "hotkeys.txt";
 
 MidiParser mp;
 BeatMap bm;
-BeatGUIBase currentGUI, menu, play, customize;
+BeatGUIBase currentGUI, menu, play, select, customize;
 Authoring author;
-Select select;
 
 void setup() {
-  size(800, 600, P3D);
+  size(800, 600/*, P3D*/);
   newSong = false; newBM = false;
   
   cp5 = new ControlP5(this);
@@ -39,12 +40,14 @@ void setup() {
   select.hide();
   
   play = new Play(cp5);
-  play.initialize();
   play.hide();
   
   author = new Authoring(cp5);
   author.initialize();
   author.hide();
+  
+  hotkeys = new HashMap(13);
+  loadHotkeys();
 }
 
 void draw() {
@@ -73,13 +76,6 @@ void songSelected(File songFile) {
           author.images.add(bm.makeImage());
         }
       }
-      
-      select.resetSongMetaData();
-      select.setSongMetaData();
-      
-      String songText = songText = mp.getFilePath() + "\n\n" + select.title + "\n\n" + select.author + "\n\n" + select.copyright + "\n\n" + select.date + "\n\n" + select.comment;
-      author.songArea.setText(songText);
-      author.groupS.show();
     } 
     catch(Exception e) {
       System.out.println(e);
@@ -122,7 +118,7 @@ void bmSelected(File bmFile) {
       bm = new BeatMap();
       bm.loadBeatMap(bmFile);
       img = bm.makeImage();
-      offset = 0;
+//      offset = 0;
       eventMap = bm.getEventQueues();
       newBM = true;
     } 
@@ -143,4 +139,62 @@ void keyPressed() {
 
 void keyReleased() {
   currentGUI.keyReleased();
+}
+
+void loadHotkeys() {
+  File f = new File(hotkeyPath);
+  if(f.exists() && !f.isDirectory()) {
+    loadHotKeyFile();
+  } else {
+    loadDefaultKeys();
+    saveHotKeys();
+  }
+}
+
+void loadDefaultKeys() {
+  hotkeys.put((int) 'a', (short) 1);
+  hotkeys.put((int) 's', (short) 2);
+  hotkeys.put((int) 'd', (short) 3);
+  hotkeys.put((int) 'r', (short) 4);
+  hotkeys.put((int) 'f', (short) 5);
+  hotkeys.put((int) 'g', (short) 6);
+  hotkeys.put((int) 'h', (short) 7);
+  hotkeys.put((int) 'j', (short) 8);
+  hotkeys.put((int) 'u', (short) 9);
+  hotkeys.put((int) 'k', (short) 10);
+  hotkeys.put((int) 'l', (short) 11);
+  hotkeys.put((int) ';', (short) 12);
+  hotkeys.put((int) 'p', (short) 13);
+}
+
+void saveHotKeys() {
+  PrintWriter output = createWriter(hotkeyPath);
+
+  Set<Integer> keySet = hotkeys.keySet();
+  Iterator<Integer> keyIterator= keySet.iterator();
+  
+  while(keyIterator.hasNext()) {
+    Integer i = keyIterator.next();
+    
+    output.println(i.toString() + " " + hotkeys.get(i));
+  }
+  
+  output.flush();
+  output.close();
+}
+
+void loadHotKeyFile() {
+  try {
+    BufferedReader reader = new BufferedReader(new FileReader(new File(hotkeyPath)));
+    String line;
+    
+    while((line = reader.readLine()) != null) {
+      String[] tokens = line.split(" ");
+      
+      hotkeys.put(Integer.parseInt(tokens[0]), (short) Integer.parseInt(tokens[1]));
+    }
+  } catch(Exception e) {
+    println("loadHotKeys() error");
+    println(e);
+  }
 }
