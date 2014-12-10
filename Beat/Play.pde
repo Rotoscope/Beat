@@ -10,9 +10,13 @@ public class Play extends BeatGUIBase {
   }
 
   public void initialize() {
-    flags = new boolean[4];
-    for(short i = 0; i < 4; i++)
-      flags[i] = false;
+    if(bm != null) {
+      int j = (int) bm.getLocationNumber();
+      flags = new boolean[j];
+    
+      for(short i = 0; i < j; i++)
+        flags[i] = false;
+    }
     scores = new int[5];
     
     release_events = new HashMap<Short,Queue<BeatMapEvent>>();
@@ -55,55 +59,34 @@ public class Play extends BeatGUIBase {
   }
 
   public void keyPressed() {
+    short i;
+    
     if (mp != null && bm != null && eventMap != null) {
-      switch(key) {
-        case 'd':
-          if (flags[0] == false) {
-            checkPressAccuracy((short) 1);
-          }
-          flags[0] = true;
-          break;
-        case 'f':
-          if (flags[1] == false) {
-            checkPressAccuracy((short) 2);
-          }
-          flags[1] = true;
-          break;
-        case 'j':
-          if (flags[2] == false) {
-            checkPressAccuracy((short) 3);
-          }
-          flags[2] = true;
-          break;
-        case 'k':
-          if (flags[3] == false) {
-            checkPressAccuracy((short) 4);
-          }
-          flags[3] = true;
-          break;
+      if(key == CODED)
+        i = hotkeys.get((int) keyCode + 65535);
+      else
+        i = hotkeys.get((int) key);
+        
+      if(i == 13) pauseGame();
+      else {
+        if(flags[(int) (i - 1)] == false) {
+          checkPressAccuracy(i);
+        }
+        flags[(int) (i - 1)] = true;
       }
     }
   }
 
   public void keyReleased() {
     if (mp != null && bm != null && release_events != null) {
-      switch(key) {
-        case 'd':
-          flags[0] = false;
-          checkReleaseAccuracy((short) 1);
-          break;
-        case 'f':
-          flags[1] = false;
-          checkReleaseAccuracy((short) 2);
-          break;
-        case 'j':
-          flags[2] = false;
-          checkReleaseAccuracy((short) 3);
-          break;
-        case 'k':
-          flags[3] = false;
-          checkReleaseAccuracy((short) 4);
-          break;
+      if(key == CODED) {
+        short i = hotkeys.get((int) keyCode + 65535);
+        flags[i - 1] = false;
+        checkReleaseAccuracy(i);
+      } else {
+        short i = hotkeys.get((int) key);
+        flags[i - 1] = false;
+        checkReleaseAccuracy(i);
       }
     }
   }
@@ -155,7 +138,7 @@ public class Play extends BeatGUIBase {
   }
   
   void checkMissTiming() {
-    for(short i = 1; i <= 4; i++) {
+    for(short i = 1; i <= bm.getLocationNumber(); i++) {
       if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
         long acc = mp.getTickPosition() - eventMap.get(i).peek().getTick();
 
@@ -180,5 +163,8 @@ public class Play extends BeatGUIBase {
   
   int calculateScore() {
     return scores[0]*200 + scores[1]*150 + scores[2]*100 + scores[3]*50;
+  }
+  
+  void pauseGame() {
   }
 }
