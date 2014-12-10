@@ -150,6 +150,7 @@ public class Select extends BeatGUIBase {
       println("Select a beatmap");
     } else {
       currentGUI.hide();
+      play.init();
       currentGUI = play;
       currentGUI.show();
       offset = -800;

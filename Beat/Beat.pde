@@ -15,8 +15,11 @@ int lineh = 20;
 boolean justStarted = false;
 
 Map<Short,Queue<BeatMapEvent>> eventMap;  //used for play
+Map<Integer,Short> hotkeys;
+
 boolean newSong, newBM;
 boolean tryMode = false;
+final String hotkeyPath = "Data" + File.separator + "hotkeys.txt";
 
 MidiParser mp;
 BeatMap bm;
@@ -45,6 +48,10 @@ void setup() {
   author = new Authoring(cp5);
   author.init();
   author.hide();
+  
+  hotkeys = new HashMap(13);
+  loadHotkeys();
+
 }
 
 void draw() {
@@ -145,4 +152,61 @@ void keyPressed() {
 
 void keyReleased() {
   currentGUI.keyReleased();
+  
+  void loadHotkeys() {
+  File f = new File(hotkeyPath);
+  if(f.exists() && !f.isDirectory()) {
+    loadHotKeyFile();
+  } else {
+    loadDefaultKeys();
+    saveHotKeys();
+  }
+}
+
+void loadDefaultKeys() {
+  hotkeys.put((int) 'a', (short) 1);
+  hotkeys.put((int) 's', (short) 2);
+  hotkeys.put((int) 'd', (short) 3);
+  hotkeys.put((int) 'r', (short) 4);
+  hotkeys.put((int) 'f', (short) 5);
+  hotkeys.put((int) 'g', (short) 6);
+  hotkeys.put((int) 'h', (short) 7);
+  hotkeys.put((int) 'j', (short) 8);
+  hotkeys.put((int) 'u', (short) 9);
+  hotkeys.put((int) 'k', (short) 10);
+  hotkeys.put((int) 'l', (short) 11);
+  hotkeys.put((int) ';', (short) 12);
+  hotkeys.put((int) 'p', (short) 13);
+}
+
+void saveHotKeys() {
+  PrintWriter output = createWriter(hotkeyPath);
+
+  Set<Integer> keySet = hotkeys.keySet();
+  Iterator<Integer> keyIterator= keySet.iterator();
+  
+  while(keyIterator.hasNext()) {
+    Integer i = keyIterator.next();
+    
+    output.println(i.toString() + " " + hotkeys.get(i));
+  }
+  
+  output.flush();
+  output.close();
+}
+
+void loadHotKeyFile() {
+  try {
+    BufferedReader reader = new BufferedReader(new FileReader(new File(hotkeyPath)));
+    String line;
+    
+    while((line = reader.readLine()) != null) {
+      String[] tokens = line.split(" ");
+      
+      hotkeys.put(Integer.parseInt(tokens[0]), (short) Integer.parseInt(tokens[1]));
+    }
+  } catch(Exception e) {
+    println("loadHotKeys() error");
+    println(e);
+  }
 }

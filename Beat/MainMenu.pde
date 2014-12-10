@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 public class MainMenu extends BeatGUIBase {
 
   boolean in3d = false;
@@ -129,21 +130,20 @@ public class MainMenu extends BeatGUIBase {
   }
 
   public void stopSong() {
-    mp.stopSong();
+    if(mp != null)
+      mp.stopSong();
   }
   
   public void authoring() {
     currentGUI.hide();
-    if(!author.isInit())
-      author.init();
+    author.init();
     currentGUI = author;
     currentGUI.show();
   }
   
   public void playing() {
     currentGUI.hide();
-    if(!select.isInit())
-      select.init();
+    select.init();
     currentGUI = select;
     currentGUI.show();
   }
@@ -166,4 +166,3 @@ public class MainMenu extends BeatGUIBase {
   public void keyReleased() {
   }
 }
-
