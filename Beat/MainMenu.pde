@@ -125,7 +125,8 @@ public class MainMenu extends BeatGUIBase {
   }
 
   public void stopSong() {
-    mp.stopSong();
+    if(mp != null)
+      mp.stopSong();
   }
   
   public void authoring() {
