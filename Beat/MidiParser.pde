@@ -16,6 +16,8 @@ public class MidiParser {
   MidiFileFormat mff;
   Track[] tracks;
   TrackTiming[] trackTimings;
+  
+  private boolean isPlaying = false;
 
   /*
     InvalidMidiDataException: Error constructing sequence or not a valid MIDI file data recognized by system
@@ -78,12 +80,14 @@ public class MidiParser {
     sequencer.open();
     sequencer.setSequence(sequence);
     sequencer.start();
+    isPlaying = true;
   }
   
   public void stopSong() {
     if(sequencer.isOpen()) {
       sequencer.stop();
       sequencer.close();
+      isPlaying = false;
     }
   }
   
@@ -153,5 +157,9 @@ public class MidiParser {
   
   public BeatMap makeBeatMap(int trackNumber) {
     return trackTimings[trackNumber - 1].toBeatMap();
+  }
+  
+  public boolean isPlaying() {
+    return isPlaying;
   }
 }

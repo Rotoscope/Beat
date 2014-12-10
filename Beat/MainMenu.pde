@@ -1,6 +1,7 @@
 public class MainMenu extends BeatGUIBase {
 
   boolean in3d = false;
+  PImage mmBackground;
   
   public MainMenu(ControlP5 cp5) {
     super(cp5, cp5.addGroup("MENU"));
@@ -62,15 +63,18 @@ public class MainMenu extends BeatGUIBase {
               .setLabel("Play Mode")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
+                  
+      mmBackground = loadImage("mainBackground.jpg");
   }
 
   public void draw() {
     background(backgroundColor);
-
-    textSize(32);
-    fill(#F56707);
-    textAlign(CENTER);
-    text(projectName, width/2, height - 50); 
+    image(mmBackground, 0,0, width, height);
+//
+//    textSize(32);
+//    fill(#F56707);
+//    textAlign(CENTER);
+//    text(projectName, width/2, height - 50); 
 
     if (img!=null)
     {
@@ -130,12 +134,16 @@ public class MainMenu extends BeatGUIBase {
   
   public void authoring() {
     currentGUI.hide();
+    if(!author.isInit())
+      author.init();
     currentGUI = author;
     currentGUI.show();
   }
   
   public void playing() {
     currentGUI.hide();
+    if(!select.isInit())
+      select.init();
     currentGUI = select;
     currentGUI.show();
   }

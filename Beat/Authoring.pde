@@ -183,7 +183,7 @@ public class Authoring extends BeatGUIBase {
     currentGUI.hide();
     groupS.hide();
     Customize cust = new Customize(cp5, beatmaps.get(selectedIndex + currentIndex));
-    cust.initialize();
+    cust.init();
     currentGUI = cust;
     currentGUI.show();
   }

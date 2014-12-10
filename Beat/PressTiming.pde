@@ -34,7 +34,7 @@ public class PressTiming extends BeatMapEvent {
       pg.noStroke();
       pg.rect(boxx,boxy,boxw,boxh);
       pg.stroke(255);
-      pg.strokeWeight(4);
+      pg.strokeWeight(6);
       pg.line(linexs,lineys, linexe,lineys);
     } else {
       

@@ -35,15 +35,15 @@ void setup() {
   currentGUI = menu;
   
   select = new Select(cp5);
-  select.initialize();
+  select.init();
   select.hide();
   
   play = new Play(cp5);
-  play.initialize();
+  play.init();
   play.hide();
   
   author = new Authoring(cp5);
-  author.initialize();
+  author.init();
   author.hide();
 }
 
@@ -78,6 +78,8 @@ void songSelected(File songFile) {
       select.setSongMetaData();
       
       String songText = songText = mp.getFilePath() + "\n\n" + select.title + "\n\n" + select.author + "\n\n" + select.copyright + "\n\n" + select.date + "\n\n" + select.comment;
+      long sec = author.beatmaps.get(0).getDuration();
+      songText += "\n\nApprox Length in Ticks: " + sec;//+ sec/60 + ":" + sec%60;
       author.songArea.setText(songText);
       author.groupS.show();
     } 

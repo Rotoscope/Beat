@@ -11,6 +11,7 @@ class MetaData {
   int midiType;
   String author, title, copyright, comment;
   Date date;
+  long micros;
  
   MetaData(MidiFileFormat midff) {
     midiType = midff.getType();
@@ -30,6 +31,8 @@ class MetaData {
       
     if(midff.getProperty("comment") != null)
       comment = midff.getProperty("comment").toString(); 
+    
+    micros = midff.getMicrosecondLength();
   }
   
   public int getMidiType() {
@@ -50,6 +53,10 @@ class MetaData {
   
   public String getComment() {
     return comment;
+  }
+  
+  public long getMicroseconds() {
+    return micros;
   }
   
   //will parse the date and return in XX/XX/XXXX format or XX/XX/XX

@@ -11,6 +11,10 @@ class Customize extends BeatGUIBase {
 
   private int offset = 0;
   private int speed = 20;
+  
+  private boolean boxOn = true;
+  private int boxColor = #DE0707;
+  private int boxZ = -20;
 
   Group group3d;
 
@@ -80,6 +84,24 @@ class Customize extends BeatGUIBase {
               .setLabel("Cancel Changes")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
+                  
+     cp5.addButton("playSongC")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(buttonw/2 + 30 + buttonw*2, height-30)
+            .setSize(buttonw, 20)
+              .setLabel("Play the song")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+
+    cp5.addButton("stopSongC")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(buttonw/2 + 35 + buttonw*3, height-30)
+            .setSize(buttonw, 20)
+              .setLabel("Stop the song")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
   }
 
   public void draw() {
@@ -89,11 +111,21 @@ class Customize extends BeatGUIBase {
     {
       pushMatrix();
       translate(width - image.width/2, height, 0);
-
+      
+      if(mp.isPlaying())
+        offset = (int)(mp.getTickPosition()*beatmap.pixelsPerTick);
+        
       if (in3d) {
         rotateX(xAngle);
         rotateY(yAngle);
         rotateZ(zAngle);
+        pushMatrix();
+        
+        if(boxOn)
+        stroke(boxColor);
+        translate(0,offset,boxZ);
+        box(image.width,image.height,20);
+        popMatrix();
       }
 
       image(image, -image.width/2, -image.height+offset - lineh);
@@ -171,5 +203,22 @@ class Customize extends BeatGUIBase {
     currentGUI = author;
     currentGUI.show();
   }
+  
+  public void playSongC() {
+    try {
+      if (mp != null)
+        mp.playSong();
+      else
+        System.out.println("No song was selected");
+    } 
+    catch(Exception e) {
+      System.out.println(e);
+    }
+  }
+
+  public void stopSongC() {
+    mp.stopSong();
+  }
+  
 }
 
