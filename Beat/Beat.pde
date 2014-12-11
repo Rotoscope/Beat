@@ -180,8 +180,8 @@ void loadDefaultKeys() {
   hotkeys.put((int) 'p', (short) 13);
 }
 
-void saveHotKeys() {
-  PrintWriter output = createWriter(hotkeyPath);
+void saveHotKeys(File f) {
+  PrintWriter output = createWriter(f);
 
   Set<Integer> keySet = hotkeys.keySet();
   Iterator<Integer> keyIterator= keySet.iterator();
@@ -196,9 +196,9 @@ void saveHotKeys() {
   output.close();
 }
 
-void loadHotKeyFile() {
+void loadHotKeyFile(File f) {
   try {
-    BufferedReader reader = new BufferedReader(new FileReader(new File(hotkeyPath)));
+    BufferedReader reader = new BufferedReader(new FileReader(f));
     String line;
     
     while((line = reader.readLine()) != null) {
