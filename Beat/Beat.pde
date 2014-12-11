@@ -152,8 +152,9 @@ void keyPressed() {
 
 void keyReleased() {
   currentGUI.keyReleased();
-  
-  void loadHotkeys() {
+}
+
+void loadHotkeys() {
   File f = new File(hotkeyPath);
   if(f.exists() && !f.isDirectory()) {
     loadHotKeyFile();
