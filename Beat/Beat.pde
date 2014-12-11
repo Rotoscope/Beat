@@ -19,7 +19,6 @@ Map<Integer,Short> hotkeys;
 
 boolean newSong, newBM;
 boolean tryMode = false;
-final String hotkeyPath = "Data" + File.separator + "hotkeys.txt";
 
 MidiParser mp;
 BeatMap bm;
@@ -155,7 +154,7 @@ void keyReleased() {
 }
 
 void loadHotkeys() {
-  File f = new File(hotkeyPath);
+  File f = new File(sketchPath + File.separator + "Data" + File.separator + "hotkeys.txt");
   if(f.exists() && !f.isDirectory()) {
     loadHotKeyFile();
   } else {
