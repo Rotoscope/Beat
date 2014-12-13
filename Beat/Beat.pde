@@ -2,6 +2,7 @@
   
 */
 import controlP5.*;
+import java.util.Set;
 
 ControlP5 cp5;
 
@@ -19,6 +20,7 @@ Map<Integer,Short> hotkeys;
 
 boolean newSong, newBM;
 boolean tryMode = false;
+final String hotkeyPath = "Data" + File.separator + "hotkeys.txt";
 
 MidiParser mp;
 BeatMap bm;
@@ -41,7 +43,6 @@ void setup() {
   select.hide();
   
   play = new Play(cp5);
-  play.init();
   play.hide();
   
   author = new Authoring(cp5);
@@ -154,12 +155,12 @@ void keyReleased() {
 }
 
 void loadHotkeys() {
-  File f = new File(sketchPath + File.separator + "Data" + File.separator + "hotkeys.txt");
+  File f = new File(hotkeyPath);
   if(f.exists() && !f.isDirectory()) {
-    loadHotKeyFile();
+    loadHotKeyFile(f);
   } else {
     loadDefaultKeys();
-    saveHotKeys();
+    saveHotKeys(f);
   }
 }
 
