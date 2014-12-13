@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 public class MainMenu extends BeatGUIBase {
 
   boolean in3d = false;
