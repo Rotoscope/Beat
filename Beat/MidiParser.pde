@@ -91,8 +91,16 @@ public class MidiParser {
     }
   }
   
+  public void pauseSong() {
+    if(sequencer.isOpen()) sequencer.stop();
+  }
+  
   public void restartSong() {
     sequencer.setTickPosition(0);
+  }
+  
+  public void resumeSong() {
+    sequencer.start();
   }
   
   public String getFilePath() {
