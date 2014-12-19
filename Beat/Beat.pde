@@ -47,8 +47,8 @@ void setup() {
   author.init();
   author.hide();
 
-  play = new Play(cp5);
-  play.hide();
+//  play = new Play(cp5);
+//  play.hide();
   
   option = new Option(cp5);
   option.init();

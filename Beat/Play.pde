@@ -6,8 +6,11 @@ public class Play extends BeatGUIBase {
   Map<Short,Queue<BeatMapEvent>> release_events;
   BeatMapEvent event;
 
+  PFont pf;
+
   public Play(ControlP5 cp5) {
     super(cp5, cp5.addGroup("PLAY"));
+    pf = createFont("Arial", 24);
   }
 
   public void initialize() {
@@ -81,7 +84,7 @@ public class Play extends BeatGUIBase {
   }
 
   public void keyPressed() {
-    short i;
+    Short i;
     
     if (mp != null && bm != null && eventMap != null) {
       if(key == CODED)
@@ -89,18 +92,20 @@ public class Play extends BeatGUIBase {
       else
         i = hotkeys.get((int) key);
         
-      if(i == 13) pauseGame();
-      else {
-        if(flags[(int) (i - 1)] == false) {
-          checkPressAccuracy(i);
+      if(i != null) {
+        if(i == 13) pauseGame();
+        else {
+          if(flags[(int) (i - 1)] == false) {
+            checkPressAccuracy(i);
+          }
+          flags[(int) (i - 1)] = true;
         }
-        flags[(int) (i - 1)] = true;
       }
     }
   }
 
   public void keyReleased() {
-    short i;
+    Short i;
     
     if (mp != null && bm != null && release_events != null) {
       if(key == CODED)
@@ -108,7 +113,7 @@ public class Play extends BeatGUIBase {
       else
         i = hotkeys.get((int) key);
       
-      if(i != 13) {
+      if(i != null && i != 13) {
         flags[i - 1] = false;
         checkReleaseAccuracy(i);
       }
@@ -309,9 +314,11 @@ public class Play extends BeatGUIBase {
         Integer k = keyIterator.next();
         short j = hotkeys.get(k);
         fill(#000000);
-        textSize(24);
+        //textSize(24);
+        textFont(pf);
+        textAlign(LEFT,TOP);
         if(j == (short) i + 1)
-          text((char) k.intValue(), xStart + i*labelWidth, yStart);
+          text((char) k.intValue(), xStart + i*(labelWidth), yStart);
       }
     } 
   }
@@ -320,10 +327,13 @@ public class Play extends BeatGUIBase {
     int j = bm.getLocationNumber();
     for(int i = 0; i < j; i++) {
       if(flags[i] == true) {
-        stroke(#98F79E);
+        stroke((bm.colors[i] & 0xffffff) | (126 << 24));
+        fill((bm.colors[i] & 0xffffff) | (126 << 24));
         strokeWeight(4);
-        line(width/2 - img.width/2 + i * img.width/j, height-lineh, img.width/j, height-lineh);
+        int x = width/2 - img.width/2 + i * img.width/j;
+        //line(x, height-lineh, x + img.width/j, height-lineh);
+        rect(x,0,img.width/j, height);
       }
     }
-  }
+  } 
 }
