@@ -1,6 +1,6 @@
 public class Play extends BeatGUIBase {
   final long MARGIN_OF_ERROR = 10;
-  boolean miss;
+  boolean miss, paused;
   int[] scores;
   boolean[] flags;
   Map<Short,Queue<BeatMapEvent>> release_events;
@@ -8,19 +8,21 @@ public class Play extends BeatGUIBase {
 
   public Play(ControlP5 cp5) {
     super(cp5, cp5.addGroup("PLAY"));
-    
-    cp5.addBang("songMenu")
+  }
+
+  public void initialize() {
+    cp5.addBang("playToPlayMenu")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(25, 20)
+          .setPosition(25, height - 55)
             .setSize(buttonw, 20)
               .setTriggerEvent(Bang.RELEASE)
                 .setLabel("MENU")
                   .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                     ;
-  }
-
-  public void initialize() {
+                    
+    paused = false;
+    
     if(bm != null) {
       int j = (int) bm.getLocationNumber();
       flags = new boolean[j];
@@ -35,47 +37,47 @@ public class Play extends BeatGUIBase {
   }
 
   public void draw() {
-    background(backgroundColor);
-    
-    if(offset < 0) {
-      noStroke();
-      fill(#000000);
-      rect(width/2 - img.width/2, 0, img.width, height);
-      offset++;
-    } else if(justStarted && offset >= 0) {
-      try {
-        if(mp != null) mp.playSong();
-      } catch(Exception e) {
-        println(e);
+    if(!paused) {
+      background(backgroundColor);
+      
+      if(offset < 0) {
+        noStroke();
+        fill(#000000);
+        rect(width/2 - img.width/2, 0, img.width, height);
+        offset++;
+      } else if(justStarted && offset >= 0) {
+        try {
+          if(mp != null) mp.playSong();
+        } catch(Exception e) {
+          println(e);
+        }
+        justStarted = false;
       }
-      justStarted = false;
-    }
-
-    if (img!=null) {
-      //    if (offset < 0)
-      //      offset = 0;
-      //    else if (offset > (img.height - height))
-      //      offset = img.height - height;
-      //      
-      if (mp != null && offset >= 0) {
-        offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
+  
+      if (img!=null) {
+        if (mp != null && offset >= 0) {
+          offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
+        }
+  
+        image(img, width/2 - img.width/2, height - img.height+offset - lineh);
+  
+        // draw timing line
+        stroke(#98F79E);
+        strokeWeight(4);
+        line(width/2 - img.width/2, height-lineh, width/2 + img.width/2, height-lineh);
+        
+        flashLine();
+        showHotKeys();
       }
-
-      image(img, width/2 - img.width/2, height - img.height+offset - lineh);
-
-      // draw timing line
-      stroke(#98F79E);
-      strokeWeight(4);
-      line(width/2 - img.width/2, height-lineh, width/2 + img.width/2, height-lineh);
+      
+      checkMissTiming();   
+      if(miss) {
+        displayAccuracy("MISS");
+        miss = false;
+      }
+      
+      displayScore();
     }
-    
-    checkMissTiming();   
-    if(miss) {
-      displayAccuracy("MISS");
-      miss = false;
-    }
-    
-    displayScore();
   }
 
   public void keyPressed() {
@@ -112,6 +114,47 @@ public class Play extends BeatGUIBase {
       }
     }
   }
+  
+  /*
+    public void keyPressed() {
+    short i = 100;
+
+    if (mp != null && bm != null && eventMap != null) {
+      if(key == CODED)
+        if(hotkeys.containsKey((int) keyCode + 65535))
+          i = hotkeys.get((int) keyCode + 65535);
+      else
+        if(hotkeys.containsKey((int) key))
+          i = hotkeys.get((int) key);
+        
+      if(i == 13) playToPlayMenu();
+      else if(i != 100) {
+        if(flags[(int) (i - 1)] == false) {
+          checkPressAccuracy(i);
+        }
+        flags[(int) (i - 1)] = true;
+      }
+    }
+  }
+
+  public void keyReleased() {
+    short i = 100;
+    
+    if (mp != null && bm != null && release_events != null) {
+      if(key == CODED)
+        if(hotkeys.containsKey((int) keyCode + 65535))
+          i = hotkeys.get((int) keyCode + 65535);
+      else
+        if(hotkeys.containsKey((int) key))
+          i = hotkeys.get((int) key);
+      
+      if(i != 100 && i != 13) {
+        flags[i - 1] = false;
+        checkReleaseAccuracy(i);
+      }
+    }
+  }
+  */
 
   public void checkPressAccuracy(short i) {
     if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
@@ -216,14 +259,71 @@ public class Play extends BeatGUIBase {
   }
   
   void pauseGame() {
+    paused = true;
     mp.pauseSong();
   }
   
   void resumeGame() throws Exception {
+    paused = false;
     mp.resumeSong();
   }
   
-  void songMenu() {
+  void restartGame() throws Exception {
+//    eventMap = bm.getEventQueues();
+    mp.restartSong();
+    mp.pauseSong();
+    offset = -800;
+    justStarted = true;
+    paused = false;
+    resetScore();
+  }
+  
+  void resetScore() {
+    for(int i = 0; i < scores.length; i++)
+      scores[i] = 0;
+  }
+  
+  void playToPlayMenu() {
+    pauseGame();
+    currentGUI.hide();
+    PlayMenu playmenu = new PlayMenu(cp5);
+    playmenu.init();
+    currentGUI = playmenu;
+    currentGUI.show();
+  }
+  
+  void showHotKeys() {
+    int labelWidth = img.width/bm.getLocationNumber();
+    int xStart = width/2 - img.width/2;
+    int yStart = height-lineh;
+    Set<Integer> keySet = hotkeys.keySet();
     
+    for(int i = 0; i < bm.getLocationNumber(); i++) {
+      strokeWeight(1);
+      stroke(#000000);
+      fill(#FFFFFF);
+      rect(xStart + i*labelWidth, yStart, labelWidth, lineh);
+  
+      Iterator<Integer> keyIterator = keySet.iterator();
+      while(keyIterator.hasNext()) {
+        Integer k = keyIterator.next();
+        short j = hotkeys.get(k);
+        fill(#000000);
+        textSize(24);
+        if(j == (short) i + 1)
+          text((char) k.intValue(), xStart + i*labelWidth, yStart);
+      }
+    } 
+  }
+  
+  void flashLine() {
+    int j = bm.getLocationNumber();
+    for(int i = 0; i < j; i++) {
+      if(flags[i] == true) {
+        stroke(#98F79E);
+        strokeWeight(4);
+        line(width/2 - img.width/2 + i * img.width/j, height-lineh, img.width/j, height-lineh);
+      }
+    }
   }
 }
