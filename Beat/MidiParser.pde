@@ -100,7 +100,8 @@ public class MidiParser {
   }
   
   public void resumeSong() {
-    sequencer.start();
+    if(!sequencer.isRunning())
+      sequencer.start();
   }
   
   public String getFilePath() {
