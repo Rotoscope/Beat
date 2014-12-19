@@ -24,9 +24,10 @@ final String hotkeyPath = "Data" + File.separator + "hotkeys.txt";
 
 MidiParser mp;
 BeatMap bm;
-BeatGUIBase currentGUI, menu, play, customize;
+BeatGUIBase currentGUI, menu, customize, option;
 Authoring author;
 Select select;
+Play play;
 
 void setup() {
   size(800, 600, P3D);
@@ -42,16 +43,19 @@ void setup() {
   select.init();
   select.hide();
   
-  play = new Play(cp5);
-  play.hide();
-  
   author = new Authoring(cp5);
   author.init();
   author.hide();
+
+  play = new Play(cp5);
+  play.hide();
+  
+  option = new Option(cp5);
+  option.init();
+  option.hide();
   
   hotkeys = new HashMap(13);
   loadHotkeys();
-
 }
 
 void draw() {
