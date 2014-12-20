@@ -190,20 +190,22 @@ public class Authoring extends BeatGUIBase {
   }
 
   public void toTry() {
-    currentGUI.hide();
-    groupS.hide();
+    if(mp != null) {
+      currentGUI.hide();
+      groupS.hide();
 
-    bm = beatmaps.get(selectedIndex + currentIndex);
+      bm = beatmaps.get(selectedIndex + currentIndex);
 
-    newSong = true;
-    img = bm.makeImage();
-    offset = 0;
-    eventMap = bm.getEventQueues();
-    newBM = true;
-    tryMode = true;
+      newSong = true;
+      img = bm.makeImage();
+      offset = 0;
+      eventMap = bm.getEventQueues();
+      newBM = true;
+      tryMode = true;
 
-    currentGUI = play;
-    currentGUI.show();
+      currentGUI = play;
+      currentGUI.show();
+    }
   }
 
   public void toCustomize() {
