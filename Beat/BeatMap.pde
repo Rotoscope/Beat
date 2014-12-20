@@ -16,6 +16,8 @@ public class BeatMap {
   private long duration;
   private String filePath;
   
+  String midiName = "";
+  
   float pixelsPerTick = 0.05;
   int imageWidth = 300;
   short maxLocations = 4;
@@ -99,6 +101,11 @@ public class BeatMap {
           case -2:
             boxOn = true;
             break;
+          case -3:
+            midiName = "";
+            for(int j = 1; j < tokens.length; j++) {
+              midiName = midiName + tokens[j] + " ";
+            }
         }
       }
     }

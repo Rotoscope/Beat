@@ -18,6 +18,7 @@ public class MidiParser {
   TrackTiming[] trackTimings;
   
   int locationCount;
+  String midiName;
   
   private boolean isPlaying = false;
 
@@ -27,6 +28,7 @@ public class MidiParser {
   */  
   MidiParser(File f) throws Exception {
       filepath = f.getAbsolutePath();
+      midiName = f.getName();
       sequence = MidiSystem.getSequence(f);
       mff = MidiSystem.getMidiFileFormat(f);
       metaData = new MetaData(mff);

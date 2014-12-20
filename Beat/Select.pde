@@ -101,7 +101,7 @@ public class Select extends BeatGUIBase {
       if(newBM) {
         newBM = false;
       }
-      bmArea.setText(bm.getFilePath());
+      bmArea.setText(bm.getFilePath() + "\n\nAssociated Midi File: " + bm.midiName);
     }
   }
   

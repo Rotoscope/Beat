@@ -245,6 +245,8 @@ public class Authoring extends BeatGUIBase {
         if(bm.boxOn) {
           pw.println(-2);
         }
+        
+        pw.println(-3 + " " + mp.midiName);
   
         pw.close();
         
