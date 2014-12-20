@@ -3,15 +3,13 @@ public class Authoring extends BeatGUIBase {
   List<PImage> images;
   List<BeatMap> beatmaps; 
 
-  String filename;
-
   int currentIndex = 0;
   int selectedIndex = 0;
 
   int imagewidth = 100;
   int topMargin = 30;
   int bottomMargin = 30;
-  int displayNumber = 2;
+  int displayNumber = 3;
 
   Textarea songArea;
   Group groupS;
@@ -100,29 +98,32 @@ public class Authoring extends BeatGUIBase {
     if (!images.isEmpty()) {
       for (int i = 0; i < displayNumber; i++) {
         if (i+currentIndex < images.size()) {
-          PicFrame f = new PicFrame(width - (displayNumber - i)*imagewidth, topMargin, imagewidth, height - (topMargin + bottomMargin));
-          f.setPic(images.get((i+currentIndex)%images.size()));
-          f.drawPic();
+          PImage curIm = images.get((i+currentIndex)%images.size());
+          int curH = curIm.height*imagewidth/(height - (topMargin + bottomMargin));
+          image(curIm, width - (displayNumber - i)*imagewidth, - curH + height - bottomMargin,imagewidth, curH);
         }
       }
-
-      stroke(#FF7003);
-      strokeWeight(4);
-      noFill();
-      rect(width - (displayNumber - selectedIndex)*imagewidth, topMargin, imagewidth, height - (topMargin + bottomMargin));
+      noStroke();
+      fill((#FF7003 & 0xffffff) | (126 << 24));
+      
+      rect(width - (displayNumber - selectedIndex)*imagewidth, 0, imagewidth, height - bottomMargin);
     }
   }
 
   private void setIndex() {
     if (selectedIndex < 0)
     {
-      currentIndex = (currentIndex +images.size() - displayNumber)%images.size();
-      selectedIndex = displayNumber - 1;
+      if(images.size() > displayNumber) {
+        currentIndex = (currentIndex +images.size() - displayNumber)%images.size();
+        selectedIndex = displayNumber - 1;
+      } else {
+        selectedIndex = images.size()-1;
+      }
     } else if (selectedIndex >= displayNumber)
     {
       currentIndex = (currentIndex + displayNumber)%images.size();
       selectedIndex = 0;
-    } else if (selectedIndex + currentIndex > images.size()) {
+    } else if (selectedIndex + currentIndex >= images.size()) {
       currentIndex = 0;
       selectedIndex = 0;
     }
@@ -161,6 +162,11 @@ public class Authoring extends BeatGUIBase {
     currentGUI = menu;
     currentGUI.show();
   }
+  
+  public void show() {
+    super.show();
+    groupS.show();
+  }
 
   public void toTry() {
     currentGUI.hide();
@@ -193,8 +199,12 @@ public class Authoring extends BeatGUIBase {
       PrintWriter pw;
       BeatMapEvent event;
       BeatMap bm = beatmaps.get(selectedIndex + currentIndex);
+    
+      String filename = cp5.get(Textfield.class,"bmName").getText() + ".bm";
+      String fs = File.separator;
+      String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs + filename;
 
-      pw = new PrintWriter(filename);
+      pw = new PrintWriter(path);
 
       //adds the notes to the file
       while (bm.getMap ().peek() != null) {
@@ -202,16 +212,25 @@ public class Authoring extends BeatGUIBase {
         pw.println(event.toFileString());
       }    
 
+      if(bm.in3d) {
+        pw.println(-1 + " " + bm.xAngle + " " + bm.yAngle + " " + bm.zAngle);
+      }
+      
+      if(bm.boxOn) {
+        pw.println(-2);
+      }
+
       pw.close();
+      
+      println(filename + " Saved");
     } 
     catch (Exception e) {
       println(e.getMessage());
     }
   }
 
-  public void applyToAllBM() {
-    BeatMap changedBM = beatmaps.get(selectedIndex + currentIndex);
-
+  public void applyToAllBM(BeatMap changedBM) {
+    
     for (int i = 0; i < beatmaps.size (); i++) {
       if (i != selectedIndex + currentIndex)
         changedBM.copyCustomize(beatmaps.get(i));

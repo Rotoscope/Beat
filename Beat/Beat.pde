@@ -11,7 +11,7 @@ int backgroundColor = #98B6EA;
 String projectName = "Beats";
 int offset = 0;
 int speed = 5;
-int buttonw = 100;
+int buttonw = 120;
 int lineh = 20;
 boolean justStarted = false;
 
@@ -34,6 +34,8 @@ void setup() {
   newSong = false; newBM = false;
   
   cp5 = new ControlP5(this);
+  PFont p = createFont("Verdana",9);
+  cp5.setControlFont(p);
 
   menu = new MainMenu(cp5);
   menu.initialize();
@@ -46,9 +48,6 @@ void setup() {
   author = new Authoring(cp5);
   author.init();
   author.hide();
-
-//  play = new Play(cp5);
-//  play.hide();
   
   option = new Option(cp5);
   option.init();
@@ -77,8 +76,8 @@ void songSelected(File songFile) {
       int trackcount = 0;
       for (int i = 0; i < mp.numOfTracks (); i++) {
         if (mp.getTrackTiming(i).getNumEventsToFile() > 0) {
-          mp.saveNoteTimings(i+1, path + songFile.getName() + "-" + (i+1) + ".bm");
-          println("Saved to file");
+          //mp.saveNoteTimings(i+1, path + songFile.getName() + "-" + (i+1) + ".bm");
+          //println("Saved to file");
           BeatMap bm = mp.makeBeatMap(i+1);
           author.beatmaps.add(bm);
           author.images.add(bm.makeImage());

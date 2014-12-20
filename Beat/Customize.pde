@@ -5,8 +5,8 @@ class Customize extends BeatGUIBase {
 
   private boolean in3d = false;
   // rotation angles for 3d image                         
-  private float xAngle = PI/3.0;
-  private float yAngle = 0;//PI/3.0;
+  private float xAngle = 0;
+  private float yAngle = 0;
   private float zAngle = 0;
 
   private int offset = 0;
@@ -22,6 +22,9 @@ class Customize extends BeatGUIBase {
     super(cp5, cp5.addGroup("CUSTOMIZE"));
     this.beatmap = beatmap;
     image = beatmap.makeImage();
+    
+    in3d = beatmap.in3d;
+    boxOn = beatmap.boxOn;
   }
 
   public void initialize() {
@@ -36,25 +39,29 @@ class Customize extends BeatGUIBase {
                   ;
 
     group3d = cp5.addGroup("group3d");
-    group3d.hide();
+    if(!in3d)
+      group3d.hide();
 
     cp5.addSlider("x_Angle")
       .plugTo(this)
         .setGroup(group3d)
           .setPosition(buttonw/2 + buttonw + 10, 20)
-            .setRange(-45, 90)
+            .setRange(0, 90)
+              .setValue(degrees(beatmap.xAngle))
               ;
     cp5.addSlider("y_Angle")
       .plugTo(this)
         .setGroup(group3d)
           .setPosition(buttonw/2 + buttonw + 10, 40)
-            .setRange(-45, 45)
+            .setRange(-30, 30)
+              .setValue(degrees(beatmap.yAngle))
               ;
     cp5.addSlider("z_Angle")
       .plugTo(this)
         .setGroup(group3d)
           .setPosition(buttonw/2 + buttonw + 10, 60)
-            .setRange(-45, 45)
+            .setRange(-30, 30)
+              .setValue(degrees(beatmap.zAngle))
               ;
 
     cp5.addBang("resetAngles")
@@ -66,11 +73,19 @@ class Customize extends BeatGUIBase {
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;  
 
+    cp5.addBang("toggleBox")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(buttonw/2, 80)
+            .setSize(buttonw, 20)
+              .setLabel("Bound box ON/OFF")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
 
     cp5.addBang("confirmC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(buttonw/2 + 10, height-30)
+          .setPosition(5, height-30)
             .setSize(buttonw, 20)
               .setLabel("Confirm Changes")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -79,7 +94,7 @@ class Customize extends BeatGUIBase {
     cp5.addBang("cancelC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(buttonw/2 + 20 + buttonw, height-30)
+          .setPosition(15 + buttonw, height-30)
             .setSize(buttonw, 20)
               .setLabel("Cancel Changes")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -88,7 +103,7 @@ class Customize extends BeatGUIBase {
      cp5.addButton("playSongC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(buttonw/2 + 30 + buttonw*2, height-30)
+          .setPosition(width - buttonw*2, height-30)
             .setSize(buttonw, 20)
               .setLabel("Play the song")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -97,7 +112,7 @@ class Customize extends BeatGUIBase {
     cp5.addButton("stopSongC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(buttonw/2 + 35 + buttonw*3, height-30)
+          .setPosition(width - buttonw, height-30)
             .setSize(buttonw, 20)
               .setLabel("Stop the song")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -110,7 +125,7 @@ class Customize extends BeatGUIBase {
     if (image!=null)
     {
       pushMatrix();
-      translate(width - image.width/2, height, 0);
+      translate(width/2, height, 0);
       
       if(mp.isPlaying())
         offset = (int)(mp.getTickPosition()*beatmap.pixelsPerTick);
@@ -119,16 +134,18 @@ class Customize extends BeatGUIBase {
         rotateX(xAngle);
         rotateY(yAngle);
         rotateZ(zAngle);
-        pushMatrix();
         
-        if(boxOn)
-        stroke(boxColor);
-        translate(0,offset,boxZ);
-        box(image.width,image.height,20);
-        popMatrix();
+        
+        if(boxOn) {
+          pushMatrix();
+          stroke(boxColor);
+          translate(0,offset,boxZ);
+          box(image.width,image.height,20);
+          popMatrix();
+        }
       }
 
-      image(image, -image.width/2, -image.height+offset - lineh);
+      image(image,  -image.width/2, -image.height+offset - lineh);
 
       // draw timing line
       stroke(#98F79E);
@@ -161,6 +178,10 @@ class Customize extends BeatGUIBase {
     if (in3d) group3d.show();
     else group3d.hide();
   }
+  
+  public void toggleBox() {
+    boxOn = !boxOn;
+  }
 
   void x_Angle(float angle) {
     xAngle = radians(angle);
@@ -185,14 +206,16 @@ class Customize extends BeatGUIBase {
   void confirmC() {
 
     // save changes to beatmap object
-    bm.in3d = in3d;
-    bm.xAngle = xAngle;
-    bm.yAngle = yAngle;
-    bm.zAngle = zAngle;
+    beatmap.in3d = in3d;
+    beatmap.xAngle = xAngle;
+    beatmap.yAngle = yAngle;
+    beatmap.zAngle = zAngle;
+    beatmap.boxOn = boxOn;
 
-    author.applyToAllBM();
+    author.applyToAllBM(beatmap);
 
     group.remove();
+    group3d.remove();
     currentGUI = author;
     currentGUI.show();
   }

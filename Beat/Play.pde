@@ -1,5 +1,7 @@
 public class Play extends BeatGUIBase {
   final long MARGIN_OF_ERROR = 10;
+  final int timingOffset = 5;
+  
   boolean miss, paused;
   int[] scores;
   boolean[] flags;
@@ -11,6 +13,7 @@ public class Play extends BeatGUIBase {
   public Play(ControlP5 cp5) {
     super(cp5, cp5.addGroup("PLAY"));
     pf = createFont("Arial", 24);
+    println(bm.getLocationNumber());
   }
 
   public void initialize() {
@@ -43,10 +46,20 @@ public class Play extends BeatGUIBase {
     if(!paused) {
       background(backgroundColor);
       
+      pushMatrix();
+      translate(width/2, height, 0);
+      
+      if (bm.in3d) {
+        translate(0,-lineh,0);
+        rotateX(bm.xAngle);
+        rotateY(bm.yAngle);
+        rotateZ(bm.zAngle);
+      }
+      
       if(offset < 0) {
         noStroke();
         fill(#000000);
-        rect(width/2 - img.width/2, 0, img.width, height);
+        rect(-img.width/2, -height, img.width, height);
         offset++;
       } else if(justStarted && offset >= 0) {
         try {
@@ -61,18 +74,38 @@ public class Play extends BeatGUIBase {
         if (mp != null && offset >= 0) {
           offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
         }
+        
+        
+        if(bm.boxOn) {
+          pushMatrix();
+          stroke(bm.boxColor);
+          translate(0,offset,bm.boxZ);
+          box(img.width,img.height,20);
+          popMatrix();
+        }
   
-        image(img, width/2 - img.width/2, height - img.height+offset - lineh);
+        image(img, -img.width/2, -img.height+offset - lineh + timingOffset);
   
         // draw timing line
         stroke(#98F79E);
         strokeWeight(4);
-        line(width/2 - img.width/2, height-lineh, width/2 + img.width/2, height-lineh);
+        line(-img.width/2, -lineh, +img.width/2, -lineh);
+        
+        if(bm.in3d) {
+          pushMatrix();
+          translate(0,-10,0);
+        }
         
         flashLine();
         showHotKeys();
+        
+        if(bm.in3d){
+          popMatrix();
+        }
       }
       
+      popMatrix();
+            
       checkMissTiming();   
       if(miss) {
         displayAccuracy("MISS");
@@ -94,7 +127,7 @@ public class Play extends BeatGUIBase {
         
       if(i != null) {
         if(i == 13) pauseGame();
-        else {
+        else if(i <= bm.getLocationNumber()) {
           if(flags[(int) (i - 1)] == false) {
             checkPressAccuracy(i);
           }
@@ -113,7 +146,7 @@ public class Play extends BeatGUIBase {
       else
         i = hotkeys.get((int) key);
       
-      if(i != null && i != 13) {
+      if(i != null && i != 13 && i <= bm.getLocationNumber()) {
         flags[i - 1] = false;
         checkReleaseAccuracy(i);
       }
@@ -153,7 +186,7 @@ public class Play extends BeatGUIBase {
         if(hotkeys.containsKey((int) key))
           i = hotkeys.get((int) key);
       
-      if(i != 100 && i != 13) {
+      if(i != 100 && i != 13 && i <= bm.getLocationNumber()) {
         flags[i - 1] = false;
         checkReleaseAccuracy(i);
       }
@@ -299,8 +332,8 @@ public class Play extends BeatGUIBase {
   
   void showHotKeys() {
     int labelWidth = img.width/bm.getLocationNumber();
-    int xStart = width/2 - img.width/2;
-    int yStart = height-lineh;
+    int xStart = -img.width/2;
+    int yStart = -lineh;
     Set<Integer> keySet = hotkeys.keySet();
     
     for(int i = 0; i < bm.getLocationNumber(); i++) {
@@ -327,12 +360,15 @@ public class Play extends BeatGUIBase {
     int j = bm.getLocationNumber();
     for(int i = 0; i < j; i++) {
       if(flags[i] == true) {
-        stroke((bm.colors[i] & 0xffffff) | (126 << 24));
+        noStroke();
         fill((bm.colors[i] & 0xffffff) | (126 << 24));
         strokeWeight(4);
-        int x = width/2 - img.width/2 + i * img.width/j;
+        int x =  -img.width/2 + i * img.width/j;
+        pushMatrix();
+        translate(0,50,0);
         //line(x, height-lineh, x + img.width/j, height-lineh);
-        rect(x,0,img.width/j, height);
+        rect(x,-height,img.width/j, height);
+        popMatrix();
       }
     }
   } 

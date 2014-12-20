@@ -26,9 +26,13 @@ public class BeatMap {
   
   boolean in3d = false;
   // rotation angles for 3d image                         
-  float xAngle = PI/3.0;
-  float yAngle = 0;//PI/3.0;
-  float zAngle = -PI/8.0;
+  float xAngle = 0;
+  float yAngle = 0;
+  float zAngle = 0;
+  
+  boolean boxOn = false;
+  int boxColor = #DE0707;
+  int boxZ = -20;
   
   public BeatMap() {
     events = new PriorityQueue<BeatMapEvent>(50, new EventComparator());
@@ -71,17 +75,32 @@ public class BeatMap {
     while((line = reader.readLine()) != null) {
       String[] tokens = line.split(delims);
       short location = (short)(Integer.parseInt(tokens[0]));
-      long tick = Long.parseLong(tokens[1]);
-      long duration = Long.parseLong(tokens[2]);
-      long endTick = tick + duration;
       
-      if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) < endTick) {
-        currentEndTick.put((short)(location-1),endTick);
-        events.add(new PressTiming(location, tick, duration, this));
+      if(location > 0) {
+        long tick = Long.parseLong(tokens[1]);      
+        long duration = Long.parseLong(tokens[2]);
+        long endTick = tick + duration;
+      
+        if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) < endTick) {
+          currentEndTick.put((short)(location-1),endTick);
+          events.add(new PressTiming(location, tick, duration, this));
+        }
+      
+        if(location > maxLocations)
+          maxLocations = location;
+      } else {
+        switch(location) {
+          case -1:
+            in3d = true;
+            xAngle = Float.parseFloat(tokens[1]);
+            yAngle = Float.parseFloat(tokens[2]);
+            zAngle = Float.parseFloat(tokens[3]);
+            break;
+          case -2:
+            boxOn = true;
+            break;
+        }
       }
-      
-      if(location > maxLocations)
-        maxLocations = location;
     }
     
     long max = 0;
@@ -94,8 +113,12 @@ public class BeatMap {
     duration = max;
   }
   
-  public void copyCustomize(BeatMap target) {
-    
+  public void copyCustomize(BeatMap bm) {
+    bm.in3d = in3d;
+    bm.xAngle = xAngle;
+    bm.yAngle = yAngle;
+    bm.zAngle = zAngle;
+    bm.boxOn = boxOn;
   }
   
   public Queue<BeatMapEvent> getMap() {
