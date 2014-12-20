@@ -36,7 +36,7 @@ final String hotkeyPath = "Data" + File.separator + "hotkeys.txt";
 
 MidiParser mp;
 BeatMap bm;
-BeatGUIBase currentGUI, menu, customize, option;
+BeatGUIBase currentGUI, menu, customize, option, playmenu;
 Authoring author;
 Select select;
 Play play;
