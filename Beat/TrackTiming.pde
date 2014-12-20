@@ -83,7 +83,7 @@ public class TrackTiming {
     return getDurationTiming().size();
   }
 
-  public void saveToFile(String filename) throws Exception {
+  public void saveToFile(String filename, int locationCount) throws Exception {
     PrintWriter pw;
     List<Note> durationList = getDurationTiming();
     Note n;
@@ -94,7 +94,7 @@ public class TrackTiming {
       //adds the durationList notes to the file
       for (int i = 0; i < durationList.size (); i++) {
         n = durationList.get(i);
-        pw.printf("%d %d %d\n", (n.getNoteKey() % 12) + 1, n.getTick(), n.getDuration());
+        pw.printf("%d %d %d\n", (n.getNoteKey() % locationCount) + 1, n.getTick(), n.getDuration());
       }    
 
       pw.close();
@@ -107,7 +107,7 @@ public class TrackTiming {
     return rand.nextInt((max - min) + 1) + min;
   }
 
-  public BeatMap toBeatMap() {
+  public BeatMap toBeatMap(int locationCount) {
     List<Note> durationList = getDurationTiming();
     Note n;
 
@@ -119,7 +119,7 @@ public class TrackTiming {
       //adds the durationList notes to the file
       for (int i = 0; i < durationList.size (); i++) {
         n = durationList.get(i);
-        short location = (short)((n.getNoteKey() % 12) + 1);
+        short location = (short)((n.getNoteKey() % locationCount) + 1);
         long tick = n.getTick();
         long duration = n.getDuration();
         long endTick = tick + duration;

@@ -1,10 +1,11 @@
 public class Play extends BeatGUIBase {
-  final long MARGIN_OF_ERROR = 10;
+  final long MARGIN_OF_ERROR = 20;
   final int timingOffset = 5;
   
   boolean miss, paused;
   int[] scores;
   boolean[] flags;
+  int[] hitFlags;
   Map<Short,Queue<BeatMapEvent>> release_events;
   BeatMapEvent event;
 
@@ -32,9 +33,12 @@ public class Play extends BeatGUIBase {
     if(bm != null) {
       int j = (int) bm.getLocationNumber();
       flags = new boolean[j];
+      hitFlags = new int[j];
     
-      for(short i = 0; i < j; i++)
+      for(short i = 0; i < j; i++) {
         flags[i] = false;
+        hitFlags[i] = 0;
+      }
     }
     scores = new int[5];
     miss = false;
@@ -218,6 +222,8 @@ public class Play extends BeatGUIBase {
           displayAccuracy("BAD");
         }
         
+        hitFlags[i-1] = 5;
+        
         event = eventMap.get(i).poll();
         event.setTick(event.getEndTick());
         event.addToQueue(release_events);
@@ -359,7 +365,7 @@ public class Play extends BeatGUIBase {
   void flashLine() {
     int j = bm.getLocationNumber();
     for(int i = 0; i < j; i++) {
-      if(flags[i] == true) {
+      if(hitFlags[i] > 0) {
         noStroke();
         fill((bm.colors[i] & 0xffffff) | (126 << 24));
         strokeWeight(4);
@@ -367,8 +373,10 @@ public class Play extends BeatGUIBase {
         pushMatrix();
         translate(0,50,0);
         //line(x, height-lineh, x + img.width/j, height-lineh);
-        rect(x,-height,img.width/j, height);
+        rect(x,-img.height,img.width/j, img.height);
         popMatrix();
+        
+        hitFlags[i]--;
       }
     }
   } 

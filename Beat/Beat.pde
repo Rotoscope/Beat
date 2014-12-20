@@ -71,6 +71,7 @@ void songSelected(File songFile) {
 
     try {   
       mp = new MidiParser(songFile);
+      mp.setLocationCount(author.locCount);
       mp.parseMidiFile();
       
       int trackcount = 0;

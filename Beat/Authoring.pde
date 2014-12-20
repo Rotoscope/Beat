@@ -1,7 +1,8 @@
 public class Authoring extends BeatGUIBase {
 
-  List<PImage> images;
-  List<BeatMap> beatmaps; 
+  List<PImage> images = null;
+  List<BeatMap> beatmaps = null; 
+  int locCount = 12;
 
   int currentIndex = 0;
   int selectedIndex = 0;
@@ -13,11 +14,14 @@ public class Authoring extends BeatGUIBase {
 
   Textarea songArea;
   Group groupS;
+  PFont font;
+  String saveStatus = "";
 
   public Authoring(ControlP5 cp5) {
     super(cp5, cp5.addGroup("AUTHOR"));
     beatmaps = new ArrayList<BeatMap>();
     images = new ArrayList<PImage>();
+    font = createFont("Arial", 24);
   }
 
   public void initialize() {
@@ -90,6 +94,18 @@ public class Authoring extends BeatGUIBase {
                     .setColorForeground(color(#6BEAD3))
                       .setText("Choose a midi file")
                         ;
+                        
+     cp5.addSlider("locCount")
+     .plugTo(this)
+     .setGroup(group)
+     .setPosition(20 + buttonw + 20,20)
+     .setWidth(100)
+     .setRange(4,12)
+     .setValue(12)
+     .setNumberOfTickMarks(9)
+     .setLabel("Choose desired number of Timing Locations")
+     .setSliderMode(Slider.FLEXIBLE)
+     ;
   }
 
   public void draw() {
@@ -108,6 +124,11 @@ public class Authoring extends BeatGUIBase {
       
       rect(width - (displayNumber - selectedIndex)*imagewidth, 0, imagewidth, height - bottomMargin);
     }
+    
+    fill(#FFFFFF);
+    textFont(font);
+    textAlign(CENTER);
+    text(saveStatus, width/2,250);
   }
 
   private void setIndex() {
@@ -186,46 +207,53 @@ public class Authoring extends BeatGUIBase {
   }
 
   public void toCustomize() {
-    currentGUI.hide();
-    groupS.hide();
-    Customize cust = new Customize(cp5, beatmaps.get(selectedIndex + currentIndex));
-    cust.init();
-    currentGUI = cust;
-    currentGUI.show();
+    
+    if(!beatmaps.isEmpty()) {
+      currentGUI.hide();
+      groupS.hide();
+      Customize cust = new Customize(cp5, beatmaps.get(selectedIndex + currentIndex));
+      cust.init();
+      currentGUI = cust;
+      currentGUI.show();
+    }
   }
 
   public void saveSelected() {
-    try {
-      PrintWriter pw;
-      BeatMapEvent event;
-      BeatMap bm = beatmaps.get(selectedIndex + currentIndex);
-    
-      String filename = cp5.get(Textfield.class,"bmName").getText() + ".bm";
-      String fs = File.separator;
-      String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs + filename;
-
-      pw = new PrintWriter(path);
-
-      //adds the notes to the file
-      while (bm.getMap ().peek() != null) {
-        event = bm.getMap().poll();
-        pw.println(event.toFileString());
-      }    
-
-      if(bm.in3d) {
-        pw.println(-1 + " " + bm.xAngle + " " + bm.yAngle + " " + bm.zAngle);
-      }
+    if(!beatmaps.isEmpty()) {
+      saveStatus = "Saving...";
+      try {
+        PrintWriter pw;
+        BeatMapEvent event;
+        BeatMap bm = beatmaps.get(selectedIndex + currentIndex);
       
-      if(bm.boxOn) {
-        pw.println(-2);
+        String filename = cp5.get(Textfield.class,"bmName").getText() + ".bm";
+        String fs = File.separator;
+        String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs + filename;
+  
+        pw = new PrintWriter(path);
+  
+        //adds the notes to the file
+        while (bm.getMap ().peek() != null) {
+          event = bm.getMap().poll();
+          pw.println(event.toFileString());
+        }    
+  
+        if(bm.in3d) {
+          pw.println(-1 + " " + bm.xAngle + " " + bm.yAngle + " " + bm.zAngle);
+        }
+        
+        if(bm.boxOn) {
+          pw.println(-2);
+        }
+  
+        pw.close();
+        
+        println(filename + " Saved");
+        saveStatus = "Saved";
+      } 
+      catch (Exception e) {
+        println(e.getMessage());
       }
-
-      pw.close();
-      
-      println(filename + " Saved");
-    } 
-    catch (Exception e) {
-      println(e.getMessage());
     }
   }
 

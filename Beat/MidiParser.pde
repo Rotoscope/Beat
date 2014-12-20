@@ -17,6 +17,8 @@ public class MidiParser {
   Track[] tracks;
   TrackTiming[] trackTimings;
   
+  int locationCount;
+  
   private boolean isPlaying = false;
 
   /*
@@ -161,14 +163,18 @@ public class MidiParser {
   //trackNumber is determined by which beatmap was selected in authoring mode
   //trackNumber > 0 && <= # of tracks in the midi file
   public void saveNoteTimings(int trackNumber, String filePath) throws Exception {  
-    trackTimings[trackNumber - 1].saveToFile(filePath);
+    trackTimings[trackNumber - 1].saveToFile(filePath, locationCount);
   }
   
   public BeatMap makeBeatMap(int trackNumber) {
-    return trackTimings[trackNumber - 1].toBeatMap();
+    return trackTimings[trackNumber - 1].toBeatMap(locationCount);
   }
   
   public boolean isPlaying() {
     return isPlaying;
+  }
+  
+  public void setLocationCount(int lc) {
+    locationCount = lc;
   }
 }
