@@ -204,7 +204,7 @@ class Customize extends BeatGUIBase {
   }
 
   void confirmC() {
-
+    stopSongC();
     // save changes to beatmap object
     beatmap.in3d = in3d;
     beatmap.xAngle = xAngle;
@@ -221,6 +221,7 @@ class Customize extends BeatGUIBase {
   }
 
   void cancelC() {
+    stopSongC();
     group.remove();
     group3d.remove();
     currentGUI = author;

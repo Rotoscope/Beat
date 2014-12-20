@@ -95,18 +95,18 @@ public class Authoring extends BeatGUIBase {
                     .setColorForeground(color(#6BEAD3))
                       .setText("Choose a midi file")
                         ;
-                        
-     cp5.addSlider("locCount")
-     .plugTo(this)
-     .setGroup(group)
-     .setPosition(20 + buttonw + 20,20)
-     .setWidth(100)
-     .setRange(4,12)
-     .setValue(12)
-     .setNumberOfTickMarks(9)
-     .setLabel("Choose desired number of Timing Locations")
-     .setSliderMode(Slider.FLEXIBLE)
-     ;
+
+    cp5.addSlider("locCount")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(20 + buttonw + 20, 20)
+            .setWidth(100)
+              .setRange(4, 12)
+                .setValue(12)
+                  .setNumberOfTickMarks(9)
+                    .setLabel("Choose desired number of Timing Locations")
+                      .setSliderMode(Slider.FLEXIBLE)
+                        ;
   }
 
   public void draw() {
@@ -117,25 +117,25 @@ public class Authoring extends BeatGUIBase {
         if (i+currentIndex < images.size()) {
           PImage curIm = images.get((i+currentIndex)%images.size());
           int curH = curIm.height*imagewidth/(height - (topMargin + bottomMargin));
-          image(curIm, width - (displayNumber - i)*imagewidth, - curH + height - bottomMargin,imagewidth, curH);
+          image(curIm, width - (displayNumber - i)*imagewidth, - curH + height - bottomMargin, imagewidth, curH);
         }
       }
       noStroke();
       fill((#FF7003 & 0xffffff) | (126 << 24));
-      
+
       rect(width - (displayNumber - selectedIndex)*imagewidth, 0, imagewidth, height - bottomMargin);
     }
-    
+
     fill(#FFFFFF);
     textFont(font);
     textAlign(CENTER);
-    text(saveStatus, width/2,250);
+    text(saveStatus, width/2, 250);
   }
 
   private void setIndex() {
     if (selectedIndex < 0)
     {
-      if(images.size() > displayNumber) {
+      if (images.size() > displayNumber) {
         currentIndex = (currentIndex +images.size() - displayNumber)%images.size();
         selectedIndex = displayNumber - 1;
       } else {
@@ -152,7 +152,7 @@ public class Authoring extends BeatGUIBase {
   }
 
   public void keyPressed() {
-    if (!images.isEmpty()) {
+    if (!images.isEmpty() && !cp5.get(Textfield.class, "bmName").isFocus()) {
       if (key == CODED) {
         switch(keyCode) {
         case LEFT:
@@ -184,14 +184,14 @@ public class Authoring extends BeatGUIBase {
     currentGUI = menu;
     currentGUI.show();
   }
-  
+
   public void show() {
     super.show();
     groupS.show();
   }
 
   public void toTry() {
-    if(mp != null) {
+    if (mp != null) {
       currentGUI.hide();
       groupS.hide();
 
@@ -203,15 +203,19 @@ public class Authoring extends BeatGUIBase {
       eventMap = bm.getEventQueues();
       newBM = true;
       tryMode = true;
-
+  
+      currentGUI.hide();
+      play = new Play(cp5);
+      play.init();
+      play.hide();
       currentGUI = play;
       currentGUI.show();
     }
   }
 
   public void toCustomize() {
-    
-    if(!beatmaps.isEmpty()) {
+
+    if (!beatmaps.isEmpty()) {
       currentGUI.hide();
       groupS.hide();
       Customize cust = new Customize(cp5, beatmaps.get(selectedIndex + currentIndex));
@@ -222,37 +226,37 @@ public class Authoring extends BeatGUIBase {
   }
 
   public void saveSelected() {
-    if(!beatmaps.isEmpty()) {
+    if (!beatmaps.isEmpty()) {
       saveStatus = "Saving...";
       try {
         PrintWriter pw;
         BeatMapEvent event;
         BeatMap bm = beatmaps.get(selectedIndex + currentIndex);
-      
-        String filename = cp5.get(Textfield.class,"bmName").getText() + ".bm";
+
+        String filename = cp5.get(Textfield.class, "bmName").getText() + ".bm";
         String fs = File.separator;
         String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs + filename;
-  
+
         pw = new PrintWriter(path);
-  
+
         //adds the notes to the file
         while (bm.getMap ().peek() != null) {
           event = bm.getMap().poll();
           pw.println(event.toFileString());
         }    
-  
-        if(bm.in3d) {
+
+        if (bm.in3d) {
           pw.println(-1 + " " + bm.xAngle + " " + bm.yAngle + " " + bm.zAngle);
         }
-        
-        if(bm.boxOn) {
+
+        if (bm.boxOn) {
           pw.println(-2);
         }
-        
+
         pw.println(-3 + " " + mp.midiName);
-  
+
         pw.close();
-        
+
         println(filename + " Saved");
         saveStatus = "Saved";
       } 
@@ -263,10 +267,11 @@ public class Authoring extends BeatGUIBase {
   }
 
   public void applyToAllBM(BeatMap changedBM) {
-    
+
     for (int i = 0; i < beatmaps.size (); i++) {
       if (i != selectedIndex + currentIndex)
         changedBM.copyCustomize(beatmaps.get(i));
     }
   }
 }
+
