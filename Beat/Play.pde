@@ -340,8 +340,6 @@ public class Play extends BeatGUIBase {
   void playToPlayMenu() {
     pauseGame();
     currentGUI.hide();
-    PlayMenu playmenu = new PlayMenu(cp5);
-    playmenu.init();
     currentGUI = playmenu;
     currentGUI.show();
   }

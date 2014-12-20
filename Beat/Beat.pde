@@ -66,6 +66,10 @@ void setup() {
   option.init();
   option.hide();
   
+  playmenu = new PlayMenu(cp5);
+  playmenu.init();
+  playmenu.hide();
+  
   hotkeys = new HashMap(13);
   loadHotkeys();
 }

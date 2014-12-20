@@ -211,6 +211,7 @@ public class Authoring extends BeatGUIBase {
       eventMap = bm.getEventQueues();
       newBM = true;
       tryMode = true;
+      justStarted = true;
   
       currentGUI.hide();
       play = new Play(cp5);
@@ -266,4 +267,3 @@ public class Authoring extends BeatGUIBase {
     }
   }
 }
-
