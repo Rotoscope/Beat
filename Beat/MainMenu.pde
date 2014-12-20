@@ -8,44 +8,7 @@ public class MainMenu extends BeatGUIBase {
   }
 
   public void initialize() {
-    cp5.addButton("playSong")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2-buttonw/2, 50)
-            .setSize(buttonw, 20)
-              .setLabel("Play the song")
-                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;
-
-    cp5.addButton("stopSong")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2-buttonw/2, 80)
-            .setSize(buttonw, 20)
-              .setLabel("Stop the song")
-                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;
-
-    cp5.addBang("bmBrowseMM")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2-buttonw/2, 110)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("Browse For Beatmaps")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-
-    cp5.addBang("songBrowseNoParseMM")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2-buttonw/2, 20)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("Load Song for Playing")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-
+    
     cp5.addBang("authoring")
       .plugTo(this)
         .setGroup(group)
