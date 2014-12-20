@@ -11,7 +11,7 @@ int backgroundColor = #98B6EA;
 String projectName = "Beats";
 int offset = 0;
 int speed = 5;
-int buttonw = 120;
+int buttonw = 150;
 int lineh = 20;
 boolean justStarted = false;
 
