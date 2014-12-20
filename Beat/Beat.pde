@@ -1,5 +1,17 @@
 /*
+  Name: Beat
+  Authors: Lowell Milliken and Stanley Seeto
   
+  Description: This application takes midi files as input and generates
+    beatmaps that can be customized and saved locally. It can then read
+    those beatmap files and allow the user play a simple rhythm game.
+  
+    This is the main Processing class. This class contains the global
+    variables and objects as well as methods that are forced to be in
+    this class by the design of the Processing library (selectInput callbacks).
+    
+    Draw and keyboard event handling methods here just call the appropriate
+    method of the current GUI.
 */
 import controlP5.*;
 import java.util.Set;
@@ -29,6 +41,7 @@ Authoring author;
 Select select;
 Play play;
 
+// create and initialize main cp5 and GUI objects
 void setup() {
   size(800, 600, P3D);
   newSong = false; newBM = false;
@@ -57,11 +70,13 @@ void setup() {
   loadHotkeys();
 }
 
+// call draw for current GUI
 void draw() {
   currentGUI.draw();
 }
 
 // this needs to be here because of how selectInput works
+// Load a midi file and parse into beatmaps and images
 void songSelected(File songFile) {
   if (songFile != null) {
     println("You selected " + songFile.getAbsolutePath());
@@ -102,6 +117,7 @@ void songSelected(File songFile) {
   }
 }
 
+// load a midi file
 void songSelectedNoParse(File songFile) {
   if (songFile == null) {
     println("User hit cancel or esc");
@@ -123,6 +139,7 @@ void songSelectedNoParse(File songFile) {
   }
 }
 
+// load a beatmap file
 void bmSelected(File bmFile) {
   if (bmFile == null) {
     println("User hit cancel or esc");

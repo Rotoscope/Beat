@@ -2,6 +2,8 @@
 *  PressTiming: class for button timing
 *    location: the location the timing corresponds to on the
 *    timing bar.
+*
+*    This class handles the drawing of the individual note timing event.
 */
 
 public class PressTiming extends BeatMapEvent {

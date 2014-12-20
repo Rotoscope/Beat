@@ -1,7 +1,8 @@
 /*
 *  TrackTiming: class that holds the note timing from a track in a midi file
- *               used to save the data into a file
- */
+*               used to save the data into a file. It also can generate a beatmap
+*               from the track information. 
+*/
 
 import java.io.PrintWriter;
 import java.util.ArrayList;

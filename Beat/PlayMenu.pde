@@ -1,3 +1,10 @@
+/*
+  Name: PlayMenu
+  Authors: Stanley Seeto
+  
+  Description: 
+    This class handles the GUI for the Play mode pause menu.
+*/
 public class PlayMenu extends BeatGUIBase {
   
   public PlayMenu(ControlP5 cp5) {

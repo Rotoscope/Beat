@@ -1,3 +1,11 @@
+/*
+  Name: Note
+  Authors: Stanley Seeto
+  
+  Description: 
+    Holds midi note information. Not all of this information
+    is currently used to create beatmaps.
+*/
 public class Note {
   final int DEFAULT_DURATION = 200;
   

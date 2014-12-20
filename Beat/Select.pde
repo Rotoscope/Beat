@@ -1,3 +1,12 @@
+/*
+  Name: Select
+  Authors: Stanley Seeto
+  
+  Description: 
+    This class handles the GUI for the Select screen prior to
+    the Play screen. This class displays the metadata for the midi file
+    and the beatmap file.
+*/
 public class Select extends BeatGUIBase {
   private Textarea songArea, bmArea;
   String author, date, copyright, title, comment;

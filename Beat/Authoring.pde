@@ -1,4 +1,11 @@
-
+/*
+  Name: Authoring
+  Authors: Lowell Milliken
+  
+  Description: 
+    This class handles the GUI for the Authoring mode as well as
+    input events.
+*/
 public class Authoring extends BeatGUIBase {
 
   List<PImage> images = null;
@@ -25,6 +32,7 @@ public class Authoring extends BeatGUIBase {
     font = createFont("Arial", 24);
   }
 
+  // create all buttons etc.
   public void initialize() {
     cp5.addBang("songBrowse")
       .plugTo(this)
@@ -225,37 +233,19 @@ public class Authoring extends BeatGUIBase {
     }
   }
 
+  // save the currently selected beatmap to local storage
   public void saveSelected() {
     if (!beatmaps.isEmpty()) {
       saveStatus = "Saving...";
       try {
         PrintWriter pw;
-        BeatMapEvent event;
         BeatMap bm = beatmaps.get(selectedIndex + currentIndex);
 
         String filename = cp5.get(Textfield.class, "bmName").getText() + ".bm";
         String fs = File.separator;
         String path = sketchPath + fs + "Data" + fs + "Beatmaps" + fs + filename;
 
-        pw = new PrintWriter(path);
-
-        //adds the notes to the file
-        while (bm.getMap ().peek() != null) {
-          event = bm.getMap().poll();
-          pw.println(event.toFileString());
-        }    
-
-        if (bm.in3d) {
-          pw.println(-1 + " " + bm.xAngle + " " + bm.yAngle + " " + bm.zAngle);
-        }
-
-        if (bm.boxOn) {
-          pw.println(-2);
-        }
-
-        pw.println(-3 + " " + mp.midiName);
-
-        pw.close();
+        bm.saveToFile(path);
 
         println(filename + " Saved");
         saveStatus = "Saved";
@@ -266,6 +256,8 @@ public class Authoring extends BeatGUIBase {
     }
   }
 
+  // this method applies customizations to all beatmaps currently being
+  // considered.
   public void applyToAllBM(BeatMap changedBM) {
 
     for (int i = 0; i < beatmaps.size (); i++) {

@@ -1,3 +1,13 @@
+/*
+  Name: Play
+  Authors: Lowell Milliken and Stanley Seeto
+  
+  Description: 
+    This class handles the GUI for the Play mode as well as
+    input events. This class keeps track of score information while
+    a user is playing and displays feedback for hits (correctly timing
+    a button press) and misses (the opposite).
+*/
 public class Play extends BeatGUIBase {
   final long MARGIN_OF_ERROR = 20;
   final int timingOffset = 5;
@@ -362,6 +372,7 @@ public class Play extends BeatGUIBase {
     } 
   }
   
+  // display a column flash for hit feedback
   void flashLine() {
     int j = bm.getLocationNumber();
     for(int i = 0; i < j; i++) {
@@ -372,7 +383,6 @@ public class Play extends BeatGUIBase {
         int x =  -img.width/2 + i * img.width/j;
         pushMatrix();
         translate(0,50,0);
-        //line(x, height-lineh, x + img.width/j, height-lineh);
         rect(x,-img.height,img.width/j, img.height);
         popMatrix();
         

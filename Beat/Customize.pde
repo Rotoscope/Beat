@@ -1,3 +1,14 @@
+/*
+  Name: Customize
+  Authors: Lowell Milliken
+  
+  Description: 
+    This class handles the GUI for the Customize mode as well as
+    input events. It contains temporary beatmap display information which
+    can be saved to the beatmap or discarded as the user decides.
+    Currently only allows for 3d rotation of the beatmap, but it could
+    be expanded without too much trouble.
+*/
 class Customize extends BeatGUIBase {
 
   private BeatMap beatmap = null;
@@ -9,6 +20,8 @@ class Customize extends BeatGUIBase {
   private float yAngle = 0;
   private float zAngle = 0;
 
+  // offset dictates the scroll of the beatmap
+  // speed determines manual scroll speed
   private int offset = 0;
   private int speed = 20;
   
@@ -85,7 +98,7 @@ class Customize extends BeatGUIBase {
     cp5.addBang("confirmC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(5, height-30)
+          .setPosition(5, height-60)
             .setSize(buttonw, 20)
               .setLabel("Confirm Changes")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -94,7 +107,7 @@ class Customize extends BeatGUIBase {
     cp5.addBang("cancelC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(15 + buttonw, height-30)
+          .setPosition(5, height-30)
             .setSize(buttonw, 20)
               .setLabel("Cancel Changes")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -103,7 +116,7 @@ class Customize extends BeatGUIBase {
      cp5.addButton("playSongC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(width - buttonw*2, height-30)
+          .setPosition(width - buttonw - 5, height-60)
             .setSize(buttonw, 20)
               .setLabel("Play the song")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -112,7 +125,7 @@ class Customize extends BeatGUIBase {
     cp5.addButton("stopSongC")
       .plugTo(this)
         .setGroup(group)
-          .setPosition(width - buttonw, height-30)
+          .setPosition(width - buttonw - 5, height-30)
             .setSize(buttonw, 20)
               .setLabel("Stop the song")
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
@@ -125,11 +138,14 @@ class Customize extends BeatGUIBase {
     if (image!=null)
     {
       pushMatrix();
+      
+      // translate to move the center of rotation
       translate(width/2, height, 0);
       
       if(mp.isPlaying())
         offset = (int)(mp.getTickPosition()*beatmap.pixelsPerTick);
         
+      // rotate and draw the box only if 3d is on
       if (in3d) {
         rotateX(xAngle);
         rotateY(yAngle);
@@ -220,6 +236,7 @@ class Customize extends BeatGUIBase {
     currentGUI.show();
   }
 
+  // back to authoring and discard changes
   void cancelC() {
     stopSongC();
     group.remove();

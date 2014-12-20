@@ -1,3 +1,12 @@
+/*
+  Name: MainMenu
+  Authors: Lowell Milliken and Stanley Seeto
+  
+  Description: 
+    This class handles the GUI for the MainMenu mode as well as
+    input events. If there is a currently selected global beatmap
+    it is displayed as well.
+*/
 public class MainMenu extends BeatGUIBase {
 
   boolean in3d = false;
@@ -33,19 +42,9 @@ public class MainMenu extends BeatGUIBase {
   public void draw() {
     background(backgroundColor);
     image(mmBackground, 0,0, width, height);
-//
-//    textSize(32);
-//    fill(#F56707);
-//    textAlign(CENTER);
-//    text(projectName, width/2, height - 50); 
 
     if (img!=null)
     {
-      //    if (offset < 0)
-      //      offset = 0;
-      //    else if (offset > (img.height - height))
-      //      offset = img.height - height;
-      //      
       if (mp != null) {
         offset = (int)(mp.getTickPosition()*bm.pixelsPerTick);
       }
