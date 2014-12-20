@@ -59,7 +59,7 @@ public class PlayMenu extends BeatGUIBase {
   }
   
   void playMenuToResume() {
-    group.remove();
+    currentGUI.hide();
     currentGUI = play;
     currentGUI.show();
     try {
@@ -71,7 +71,7 @@ public class PlayMenu extends BeatGUIBase {
   }
   
   void playMenuToRestart() {
-    group.remove();
+    currentGUI.hide();
     try {
       play.restartGame();
       currentGUI = play;
@@ -83,13 +83,13 @@ public class PlayMenu extends BeatGUIBase {
   }
   
   void playMenuToSelect() {
-    group.remove();
+    currentGUI.hide();
     currentGUI = select;
     currentGUI.show();
   }
   
   void playMenuToMain() {
-    group.remove();
+    currentGUI.hide();
     currentGUI = menu;
     currentGUI.show();
   }
