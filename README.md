@@ -26,4 +26,4 @@ Non-mouse controls:
 		Pressing "p" will pause the song. To resume you need to go 		through the menu button and click resume.
 		
 
-Options menu is currently not working. Hotkeys can be changed by changing ascii codes in the hotkeys.txt file. This file is located in your Processing directory in a folder called data.
+Options menu is currently not working. Hotkeys can be changed by changing ascii codes in the hotkeys.txt file. This file is located in your Processing directory in a folder called data after launching the program once.
