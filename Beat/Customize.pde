@@ -150,17 +150,16 @@ class Customize extends BeatGUIBase {
         rotateX(xAngle);
         rotateY(yAngle);
         rotateZ(zAngle);
-        
-        
-        if(boxOn) {
-          pushMatrix();
-          stroke(boxColor);
-          translate(0,offset,boxZ);
-          box(image.width,image.height,20);
-          popMatrix();
-        }
       }
-
+        
+      if(boxOn) {
+        pushMatrix();
+        stroke(boxColor);
+        translate(0,-image.height/2+offset-lineh,boxZ);
+        box(image.width,image.height,20);
+        popMatrix();
+      }
+    
       image(image,  -image.width/2, -image.height+offset - lineh);
 
       // draw timing line

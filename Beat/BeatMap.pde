@@ -20,6 +20,7 @@ public class BeatMap {
   private Queue<BeatMapEvent> events;
   private long duration;
   private String filePath;
+  final long minGap = 100;
   
   String midiName = "";
   
@@ -93,7 +94,7 @@ public class BeatMap {
         long duration = Long.parseLong(tokens[2]);
         long endTick = tick + duration;
       
-        if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) < endTick) {
+        if(currentEndTick.get(location-1) == null || currentEndTick.get(location-1) + minGap < tick) {
           currentEndTick.put((short)(location-1),endTick);
           events.add(new PressTiming(location, tick, duration, this));
         }

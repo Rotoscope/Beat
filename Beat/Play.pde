@@ -9,7 +9,7 @@
     a button press) and misses (the opposite).
 */
 public class Play extends BeatGUIBase {
-  final long MARGIN_OF_ERROR = 20;
+  final long MARGIN_OF_ERROR = 40;
   final int timingOffset = 5;
   
   boolean miss, paused;
@@ -73,7 +73,7 @@ public class Play extends BeatGUIBase {
       if(offset < 0) {
         noStroke();
         fill(#000000);
-        rect(-img.width/2, -height, img.width, height);
+        rect(-img.width/2, offset - lineh, img.width, height*2);
         offset++;
       } else if(justStarted && offset >= 0) {
         try {
@@ -93,7 +93,7 @@ public class Play extends BeatGUIBase {
         if(bm.boxOn) {
           pushMatrix();
           stroke(bm.boxColor);
-          translate(0,offset,bm.boxZ);
+          translate(0,-img.height/2+offset-lineh,bm.boxZ);
           box(img.width,img.height,20);
           popMatrix();
         }
@@ -107,10 +107,11 @@ public class Play extends BeatGUIBase {
         
         if(bm.in3d) {
           pushMatrix();
-          translate(0,-10,0);
+          translate(0,-30,0);
         }
         
         flashLine();
+
         showHotKeys();
         
         if(bm.in3d){
@@ -119,7 +120,7 @@ public class Play extends BeatGUIBase {
       }
       
       popMatrix();
-            
+
       checkMissTiming();   
       if(miss) {
         displayAccuracy("MISS");
@@ -166,48 +167,8 @@ public class Play extends BeatGUIBase {
       }
     }
   }
-  
-  /*
-    public void keyPressed() {
-    short i = 100;
-
-    if (mp != null && bm != null && eventMap != null) {
-      if(key == CODED)
-        if(hotkeys.containsKey((int) keyCode + 65535))
-          i = hotkeys.get((int) keyCode + 65535);
-      else
-        if(hotkeys.containsKey((int) key))
-          i = hotkeys.get((int) key);
-        
-      if(i == 13) playToPlayMenu();
-      else if(i != 100) {
-        if(flags[(int) (i - 1)] == false) {
-          checkPressAccuracy(i);
-        }
-        flags[(int) (i - 1)] = true;
-      }
-    }
-  }
-
-  public void keyReleased() {
-    short i = 100;
     
-    if (mp != null && bm != null && release_events != null) {
-      if(key == CODED)
-        if(hotkeys.containsKey((int) keyCode + 65535))
-          i = hotkeys.get((int) keyCode + 65535);
-      else
-        if(hotkeys.containsKey((int) key))
-          i = hotkeys.get((int) key);
-      
-      if(i != 100 && i != 13 && i <= bm.getLocationNumber()) {
-        flags[i - 1] = false;
-        checkReleaseAccuracy(i);
-      }
-    }
-  }
-  */
-
+  // checks the accuracy of a button press
   public void checkPressAccuracy(short i) {
     if(eventMap != null && eventMap.get(i) != null && eventMap.get(i).peek() != null) {
       long accuracy = Math.abs(mp.getTickPosition() - eventMap.get(i).peek().getTick());
@@ -301,14 +262,15 @@ public class Play extends BeatGUIBase {
   
   void displayAccuracy(String s) {
     textSize(32);
-    fill(#8FBC8F);
+    fill(#FA7C05);
     textAlign(CENTER);
     text(s, width/2, height/4);//, width/2 + img.width/2, 40);
   }
   
   void displayScore() {
     textSize(24);
-    fill(#A9DFA7);
+    fill(#FA7C05);
+    textAlign(LEFT,TOP);
     text("SCORE:\n" + calculateScore(), width*5/6, height/6);
   }
   
@@ -340,7 +302,15 @@ public class Play extends BeatGUIBase {
   void playToPlayMenu() {
     pauseGame();
     currentGUI.hide();
-    currentGUI = playmenu;
+    
+    if(tryMode) {
+      tryMode = false;
+      currentGUI = author;
+      mp.stopSong();
+    }
+    else
+      currentGUI = playmenu;
+    
     currentGUI.show();
   }
   

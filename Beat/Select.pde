@@ -70,17 +70,7 @@ public class Select extends BeatGUIBase {
                 .setLabel("PLAY")
                   .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                     ;
-/*                  
-    cp5.addBang("option")
-      .plugTo(this)
-        .setGroup(group)
-          .setPosition(width/2 - buttonw/2, height - 50)
-            .setSize(buttonw, 20)
-              .setTriggerEvent(Bang.RELEASE)
-                .setLabel("OPTION")
-                  .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                    ;
-*/    
+
     cp5.addBang("menu")
       .plugTo(this)
         .setGroup(group)
@@ -104,14 +94,20 @@ public class Select extends BeatGUIBase {
         newSong = false;
       }
       songText = mp.getFilePath() + "\n\n" + title + "\n\n" + author + "\n\n" + copyright + "\n\n" + date + "\n\n" + comment;
-      songArea.setText(songText);
-    }
+    } else {
+     songText = "Select a midi file";     
+    } 
+    String bmText;
     if(bm != null) {
       if(newBM) {
         newBM = false;
       }
-      bmArea.setText(bm.getFilePath() + "\n\nAssociated Midi File: " + bm.midiName);
+      bmText = bm.getFilePath() + "\n\nAssociated Midi File: " + bm.midiName;
+    } else {
+      bmText = "Select a beat map file (.bm)";      
     }
+    songArea.setText(songText);
+    bmArea.setText(bmText);
   }
   
   public void keyPressed() {

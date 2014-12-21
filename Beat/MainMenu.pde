@@ -36,6 +36,15 @@ public class MainMenu extends BeatGUIBase {
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;
                   
+     cp5.addBang("optionsMM")
+      .plugTo(this)
+        .setGroup(group)
+          .setPosition(width/2-buttonw/2, 200)
+            .setSize(buttonw, 20)
+              .setLabel("Options")
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+                  
       mmBackground = loadImage("mainBackground.jpg");
   }
 
@@ -108,6 +117,13 @@ public class MainMenu extends BeatGUIBase {
     currentGUI = select;
     currentGUI.show();
   }
+  
+  public void optionsMM() {
+    currentGUI.hide();
+    option.init();
+    currentGUI = option;
+    currentGUI.show();
+  }
 
   public void keyPressed() {
     if (img != null) {
@@ -125,5 +141,11 @@ public class MainMenu extends BeatGUIBase {
   }
   
   public void keyReleased() {
+  }
+  
+  public void show() {
+    bm = null;
+    mp = null;
+    super.show();
   }
 }

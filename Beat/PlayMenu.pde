@@ -92,6 +92,8 @@ public class PlayMenu extends BeatGUIBase {
   void playMenuToSelect() {
     currentGUI.hide();
     currentGUI = select;
+    mp = null;
+    bm = null;
     currentGUI.show();
   }
   

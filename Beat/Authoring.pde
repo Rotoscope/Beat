@@ -101,7 +101,7 @@ public class Authoring extends BeatGUIBase {
                 .setColor(#000000)
                   .setColorBackground(color(#ABD7E5))
                     .setColorForeground(color(#6BEAD3))
-                      .setText("Choose a midi file")
+                      .setText("First, use the slider above to choose the number of locations. Then choose a midi file by clicking the button above.")
                         ;
 
     cp5.addSlider("locCount")
