@@ -24,3 +24,6 @@ Non-mouse controls:
 	Play Mode:
 		The buttons for each location are displayed on the bottom of 		the screen. In case it is not obvious, the far right button 		(if there are 12 locations) is the semi-colon button (";").
 		Pressing "p" will pause the song. To resume you need to go 		through the menu button and click resume.
+		
+
+Options menu is currently not working. Hotkeys can be changed by changing ascii codes in the hotkeys.txt file. This file is located in your Processing directory in a folder called data.
